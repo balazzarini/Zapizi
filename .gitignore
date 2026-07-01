@@ -1,0 +1,18 @@
+# Ignorar tudo na raiz do repositório
+/*
+
+# Exceção para o próprio arquivo .gitignore
+!.gitignore
+
+# Permitir a pasta 07_Scripts_e_Ferramentas e seu subdiretório do WhatsApp Monitor
+!/07_Scripts_e_Ferramentas/
+/07_Scripts_e_Ferramentas/*
+!/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/
+
+# Ignorar arquivos temporários, caches e locais do WhatsApp Monitor
+/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/node_modules/
+/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/.wwebjs_auth/
+/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/.wwebjs_cache/
+/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/.env
+/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/alerts.json
+/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/*.log
