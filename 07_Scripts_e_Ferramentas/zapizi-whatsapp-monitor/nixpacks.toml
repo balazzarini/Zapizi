@@ -1,8 +1,8 @@
 [phases.setup]
-nixPkgs = ["...", "nss", "alsa-lib", "atk", "cups", "libdrm", "gtk3", "pango", "cairo", "libXcomposite", "libXcursor", "libXdamage", "libXext", "libXfixes", "libXi", "libXrandr", "libXrender", "libxshmfence", "libXtst", "mesa", "dbus"]
+nixPkgs = ["..."]
 
 [phases.build]
-cmds = ["npm install", "npx puppeteer browsers install chrome"]
+cmds = ["npm install"]
 
 [start]
 cmd = "npm start"
