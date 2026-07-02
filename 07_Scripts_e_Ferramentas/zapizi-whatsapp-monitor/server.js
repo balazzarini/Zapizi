@@ -75,8 +75,8 @@ const puppeteerConfig = {
 
 if (!isRailway) {
   puppeteerConfig.executablePath = 'C:\\Users\\Bruno\\.cache\\puppeteer\\chrome\\win64-146.0.7680.31\\chrome-win64\\chrome.exe';
-} else {
-  puppeteerConfig.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium';
+} else if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+  puppeteerConfig.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
 }
 
 const client = new Client({
