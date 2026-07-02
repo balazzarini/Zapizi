@@ -315,10 +315,7 @@ function createAlertMarkup(alert, isDashboardView = false) {
         Excluir
       </button>
       <button class="btn btn-secondary" onclick="regenerateReply('${alert.id}', this)">
-        Regerar Resposta
-      </button>
-      <button class="btn btn-primary" onclick="copyReply('${alert.id}', this)">
-        Copiar Resposta
+        Regerar Análise
       </button>
     `;
 
@@ -341,14 +338,11 @@ function createAlertMarkup(alert, isDashboardView = false) {
 
       <div class="alert-analysis-box">
         <div class="analysis-title">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-          Análise e Sugestão de Resposta (Zapizi AI)
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather"><polygon points="12 2 2 7 12 12 22 7 12 2"></polyline><line x1="2" y1="17" x2="12" y2="22"></line><line x1="12" y1="22" x2="22" y2="17"></line><line x1="2" y1="12" x2="12" y2="17"></line><line x1="12" y1="17" x2="22" y2="12"></line></svg>
+          Análise (Zapizi AI)
         </div>
         <div class="analysis-reason">
           <strong>Motivo:</strong> ${escapeHtml(alert.reason)}
-        </div>
-        <div class="suggested-reply-text" id="reply-text-${alert.id}">
-          ${alert.suggestedReply ? escapeHtml(alert.suggestedReply) : '<em>Nenhuma resposta disponível. Configure sua chave API do Gemini para gerar automaticamente.</em>'}
         </div>
       </div>
 
@@ -399,7 +393,7 @@ window.copyReply = copyReply;
 async function regenerateReply(id, buttonEl) {
   const originalText = buttonEl.textContent;
   buttonEl.disabled = true;
-  buttonEl.textContent = 'Gerando...';
+  buttonEl.textContent = 'Regerando...';
   
   try {
     const res = await apiFetch(`/api/alerts/${id}/regenerate`, { method: 'POST' });
@@ -413,7 +407,7 @@ async function regenerateReply(id, buttonEl) {
         renderAlerts();
       }
     } else {
-      alert('Falha ao gerar resposta. Verifique sua chave API nas configurações.');
+      alert('Falha ao gerar análise. Verifique sua chave API nas configurações.');
     }
   } catch (e) {
     alert('Erro ao se conectar ao servidor.');

@@ -126,33 +126,51 @@ async function classifyMessage(messageText, groupName, senderName) {
   if (geminiKey) {
     try {
       const genAI = new GoogleGenerativeAI(geminiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       
-      const prompt = `Você é o Bruno, fundador da Zapizi, uma empresa líder em sistemas de pagamento e telemetria para gruas de pelúcia e vending machines. Você está monitorando grupos de WhatsApp de operadores do setor.
+      const systemInstruction = `Você é o analisador de mensagens inteligente do Zapizi WhatsApp Monitor.
+A Zapizi é uma empresa líder que fornece sistemas de pagamento (cartão de crédito/débito, aproximação e PIX) e telemetria para o mercado de autosserviço: gruas de pelúcia (plush cranes), vending machines, micro-mercados, máquinas de café, lava-jatos e terminais de autoatendimento.
 
-      Mensagem agrupada de "${senderName}" no grupo "${groupName}":
-      """${messageText}"""
+Canais Oficiais de Contato da Zapizi:
+- Website: https://zapizi.com.br
+- Comercial/Suporte: Disponível via canais oficiais da empresa.
 
-      Sua tarefa é analisar a mensagem e classificá-la.
+Sua tarefa é analisar mensagens enviadas em grupos de operadores de máquinas e classificá-las. Você deve ir além de simples palavras-chave e entender a real intenção (o significado semântico) da mensagem.
 
-      REGRAS CRÍTICAS:
-      - Se a mensagem for PROPAGANDA de terceiros (ex: alguém vendendo pelúcias, vendendo máquinas, atacadistas, fornecedores, "chama no pv", lista de preços, rifas, sorteios), você DEVE classificar como "Outro" (ou "Descartar").
-      - Nós somos a Zapizi (oferecemos telemetria e leitores de cartão/pix). Nós NÃO compramos pelúcias de fornecedores nesses grupos, então ignore vendedores de pelúcia.
+Categorias de Classificação:
+1. "Oportunidade":
+   - Operadores demonstrando interesse em comprar leitores de cartão, telemetria ou sistemas de pagamento.
+   - Operadores perguntando sobre preços, planos ou como contratar a Zapizi.
+   - Mensagens perguntando como falar com o comercial da Zapizi, ou pedindo o link do site/contato da empresa para novas aquisições.
+   - Buscas por pontos comerciais ou parcerias onde a Zapizi possa se encaixar.
+2. "Problema":
+   - Reclamações sobre falhas de pagamento, PIX fora do ar, erro no leitor, sinal da máquina caindo ou máquina travada.
+   - Operadores pedindo suporte, ajuda técnica ou relatando problemas operacionais.
+   - Mensagens pedindo o contato de suporte da Zapizi para resolver problemas de transação ou estornos.
+3. "Outro":
+   - Spams, propagandas de terceiros (vendedores de pelúcias, atacadistas, fornecedores de brinquedos, rifas, sorteios).
+   - Conversas casuais, cumprimentos ou discussões não relacionadas às soluções da Zapizi.
 
-      Categorias:
-      1. "Oportunidade" (Operadores querendo modernizar máquinas, buscando sistema de pagamento, leitores de cartão, telemetria, ou buscando pontos de locação onde podemos agregar valor).
-      2. "Problema" (Reclamações sobre falhas de pagamento, PIX/cartão fora do ar, máquina travada, erros técnicos nossos, etc).
-      3. "Outro" (Propagandas de fornecedores, spam, conversas aleatórias, saudações, vendas de pelúcias/rifas).
+REGRAS CRÍTICAS:
+- Vá além de palavras-chave: analise o contexto completo e a intenção do emissor. Se um operador diz "alguém aí usa o sistema azul na máquina de pelúcia e está fora do ar?" ou "como consigo falar com o atendimento deles?", identifique a intenção como Oportunidade ou Problema.
+- Se a mensagem for propaganda de terceiros (venda de pelúcia, venda de máquina usada, divulgação de atacado), classifique SEMPRE como "Outro".
+- Não sugira nenhuma resposta. Foque exclusivamente na classificação e na justificativa.
 
-      Se for Oportunidade ou Problema, avalie a urgência (Alta, Média, Baixa) e gere uma sugestão de resposta curta, amigável e direta, adotando a persona do Bruno. Fale de forma pessoal, como: "Fala pessoal, aqui é o Bruno da Zapizi...". Seja direto ao ponto.
+Você deve responder EXCLUSIVAMENTE em formato JSON com a seguinte estrutura:
+{
+  "category": "Oportunidade" | "Problema" | "Outro",
+  "urgency": "Alta" | "Média" | "Baixa",
+  "reason": "Justificativa curta em português explicando por que foi classificado dessa forma."
+}`;
 
-      Responda EXCLUSIVAMENTE em formato JSON com esta exata estrutura:
-      {
-        "category": "Oportunidade" | "Problema" | "Outro",
-        "urgency": "Alta" | "Média" | "Baixa",
-        "reason": "Explicação curta do motivo",
-        "suggestedReply": "Sua resposta como Bruno da Zapizi..."
-      }`;
+      const model = genAI.getGenerativeModel({ 
+        model: 'gemini-1.5-flash',
+        systemInstruction: systemInstruction
+      });
+      
+      const prompt = `Grupo: "${groupName}"
+Remetente: "${senderName}"
+Mensagem:
+"""${messageText}"""`;
       
       const result = await model.generateContent(prompt);
       const response = await result.response;
@@ -173,7 +191,6 @@ async function classifyMessage(messageText, groupName, senderName) {
   let category = 'Outro';
   let urgency = 'Baixa';
   let reason = 'Classificação offline baseada em palavras-chave.';
-  let suggestedReply = '';
 
   const spamKeywords = ['chama no pv', 'vendo', 'atacadista', 'promoção', 'tabela', 'frete', 'fornecedor', 'rifa', 'sorteio', 'whatsapp'];
   const isSpam = spamKeywords.some(kw => textLower.includes(kw));
@@ -185,15 +202,13 @@ async function classifyMessage(messageText, groupName, senderName) {
     if (problemKeywords.some(kw => textLower.includes(kw))) {
       category = 'Problema';
       urgency = 'Alta';
-      suggestedReply = `Fala pessoal, aqui é o Bruno da Zapizi. Vi que estão com problemas, me manda o ID da máquina no privado pra gente resolver isso na hora!`;
     } else if (opportunityKeywords.some(kw => textLower.includes(kw))) {
       category = 'Oportunidade';
       urgency = 'Média';
-      suggestedReply = `Fala pessoal, Bruno da Zapizi aqui. Temos a solução perfeita de pagamento e telemetria pra sua operação rodar 100%. Te chamei no privado!`;
     }
   }
 
-  return { category, urgency, reason, suggestedReply };
+  return { category, urgency, reason };
 }
 
 // Sincronizar mensagens antigas dos grupos monitorados
@@ -246,7 +261,6 @@ async function syncRecentMessages() {
               category: analysis.category,
               urgency: analysis.urgency,
               reason: analysis.reason,
-              suggestedReply: analysis.suggestedReply,
               resolved: false
             };
 
@@ -336,7 +350,6 @@ client.on('message', async (message) => {
               category: analysis.category,
               urgency: analysis.urgency,
               reason: analysis.reason,
-              suggestedReply: analysis.suggestedReply,
               resolved: false
             };
 
@@ -475,7 +488,6 @@ app.post('/api/alerts/:id/regenerate', async (req, res) => {
   const alert = alerts[alertIndex];
   const analysis = await classifyMessage(alert.message, alert.group, alert.sender);
   
-  alert.suggestedReply = analysis.suggestedReply;
   alert.urgency = analysis.urgency;
   alert.category = analysis.category;
   alert.reason = analysis.reason;
