@@ -61,7 +61,7 @@ let alerts = loadJSON(ALERTS_PATH, []);
 // Inicialização do WhatsApp Client
 const isRailway = process.env.RAILWAY_ENVIRONMENT || process.env.NIXPACKS;
 const puppeteerConfig = {
-  headless: true,
+  headless: isRailway ? true : false,
   args: [
     '--no-sandbox',
     '--disable-setuid-sandbox',
@@ -83,7 +83,8 @@ const client = new Client({
   authStrategy: new LocalAuth({
     dataPath: path.join(__dirname, '.wwebjs_auth')
   }),
-  puppeteer: puppeteerConfig
+  puppeteer: puppeteerConfig,
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
 });
 
 client.on('qr', (qr) => {
