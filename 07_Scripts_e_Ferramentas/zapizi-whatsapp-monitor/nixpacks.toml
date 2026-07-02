@@ -5,7 +5,7 @@ aptPkgs = [
     "libatk-bridge2.0-0",
     "libgtk-3-0",
     "libgbm-dev",
-    "libasound2",
+    "libasound2t64",
     "libx11-xcb1",
     "libxcomposite1",
     "libxcursor1",
