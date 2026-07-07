@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zapizi | Inside Sales Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #215FEA;
+            --primary-hover: #1946B0;
+            --bg-dark: #0F172A;
+            --bg-card: #1E293B;
+            --text-light: #F8FAFC;
+            --text-muted: #94A3B8;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at top right, rgba(33, 95, 234, 0.15), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.05), transparent 40%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo img {
+            height: 40px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            background-color: rgba(33, 95, 234, 0.2);
+            color: #60A5FA;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: rgba(33, 95, 234, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(33, 95, 234, 0.15);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        .radio-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--text-muted);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .option.selected .radio-btn {
+            border-color: var(--primary);
+        }
+
+        .option.selected .radio-btn::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-light);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-muted);
+        }
+
+        /* Results Screen */
+        .results-container {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem auto;
+            box-shadow: 0 0 30px rgba(33, 95, 234, 0.3);
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .radar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .metric-bar-bg {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.5);
+            color: white;
+            font-family: 'Sora', sans-serif;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Loading Overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="spinner"></div>
+        <p>Calculando seus resultados e enviando candidatura...</p>
+    </div>
+
+    <div class="container">
+        <div class="card" id="intro-screen">
+            <div class="logo">
+                <img src="logo.svg" alt="Zapizi Logo">
+            </div>
+            <h1>Avaliação de Perfil - Inside Sales</h1>
+            <p class="subtitle">Descubra sua aderência à cultura comercial, negociação e agressividade em vendas B2B da Zapizi.</p>
+            
+            <div class="form-group">
+                <label for="candidate-name">Nome Completo</label>
+                <input type="text" id="candidate-name" placeholder="Digite seu nome completo">
+            </div>
+            <div class="form-group">
+                <label for="candidate-email">E-mail</label>
+                <input type="email" id="candidate-email" placeholder="Digite seu e-mail">
+            </div>
+            <div class="form-group">
+                <label for="candidate-phone">Telefone (WhatsApp)</label>
+                <input type="tel" id="candidate-phone" placeholder="(XX) 9XXXX-XXXX">
+            </div>
+            <div class="form-group">
+                <label for="candidate-linkedin">URL do LinkedIn</label>
+                <input type="url" id="candidate-linkedin" placeholder="https://linkedin.com/in/seu-perfil">
+            </div>
+            <div class="form-group">
+                <label for="candidate-salary">Pretensão Salarial (CLT ou PJ)</label>
+                <input type="text" id="candidate-salary" placeholder="Ex: R$ 3.000,00 + Comissão">
+            </div>
+
+            <button class="btn" id="start-btn">Iniciar Avaliação (10 perguntas)</button>
+        </div>
+
+        <div class="card hidden" id="quiz-screen">
+            <div class="logo" style="margin-bottom: 1rem;">
+                <img src="logo.svg" alt="Zapizi Logo" style="height: 24px;">
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            
+            <div class="question-header">
+                <span class="badge" id="question-category">Comportamental</span>
+                <span style="color: var(--text-muted); font-size: 0.9rem;" id="question-counter">1/10</span>
+            </div>
+
+            <h2 class="question-text" id="question-text">Question goes here...</h2>
+
+            <div class="options" id="options-container">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-outline" id="prev-btn" style="display: none;">Voltar</button>
+                <button class="btn" id="next-btn" disabled>Próxima</button>
+            </div>
+        </div>
+
+        <div class="card hidden" id="results-screen">
+            <div class="logo">
+                <img src="logo.svg" alt="Zapizi Logo">
+            </div>
+            <div class="results-container">
+                <h1>Avaliação Concluída!</h1>
+                <p class="subtitle">Obrigado, <span id="res-name">Candidato</span>. Seus resultados foram registrados.</p>
+
+                <div class="score-circle">
+                    <div class="score-number" id="final-score">0</div>
+                    <div class="score-label">Fit Score</div>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">
+                    Tire um print desta tela ou salve seus resultados, se solicitado.
+                </p>
+
+                <div class="radar-chart">
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🎯 Persuasão & Negociação</span>
+                            <span id="score-persuasion">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-persuasion" style="background-color: #3B82F6;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🤝 Resiliência & Inteligência Emocional</span>
+                            <span id="score-emotional">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-emotional" style="background-color: #10B981;"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>⚡ Pró-atividade & Foco em Metas</span>
+                            <span id="score-action">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-action" style="background-color: #F59E0B;"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>💙 Fit Cultural (Zapizi Way)</span>
+                            <span id="score-fit">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-fit" style="background-color: #8B5CF6;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                category: "Abordagem & Outbound",
+                text: "Você liga para o dono de um restaurante famoso que não conhece a Zapizi. Ele atende e diz: 'Estou ocupado agora, e já uso a Stone há 5 anos, não quero trocar.' O que você faz?",
+                options: [
+                    { text: "Agradeço e desligo, marcando no CRM para retornar na semana que vem para não incomodá-lo.", scores: { persuasion: 1, emotional: 3, action: 2, fit: 1 } },
+                    { text: "Pergunto rapidamente: 'A Stone está te cobrando aluguel e te repassando o PIX com taxa? Só me dê 30 segundos, se eu não provar que posso cortar seu custo, eu desligo.'", scores: { persuasion: 10, emotional: 8, action: 10, fit: 10 } },
+                    { text: "Peço desculpas por incomodar e pergunto se posso mandar um e-mail com nossa apresentação comercial para ele ver depois.", scores: { persuasion: 3, emotional: 4, action: 3, fit: 3 } },
+                    { text: "Digo agressivamente que a Stone tem taxas abusivas, que ele está perdendo dinheiro e sendo enganado.", scores: { persuasion: 4, emotional: 1, action: 6, fit: 2 } }
+                ]
+            },
+            {
+                category: "Negociação & Contorno de Objeções",
+                text: "O cliente quer fechar, mas exige uma taxa de débito de 0.79% porque a concorrência ofereceu isso. Nossa taxa mínima rentável aprovada para o volume dele é 0.99%. O que você faz?",
+                options: [
+                    { text: "Digo que infelizmente não posso cobrir e deixo o cliente ir embora, pois regras são regras.", scores: { persuasion: 2, emotional: 4, action: 2, fit: 2 } },
+                    { text: "Ofereço 0.79% por conta própria para não perder a venda e depois vejo com o gerente se ele aprova a exceção.", scores: { persuasion: 5, emotional: 2, action: 6, fit: 0 } },
+                    { text: "Foco no valor agregado: mostro que a Zapizi oferece suporte humanizado (CS dedicado) e a máquina ZAP PRO que concilia PIX rápido, compensando a diferença de 0.20% com mais conversão no caixa.", scores: { persuasion: 10, emotional: 8, action: 9, fit: 10 } },
+                    { text: "Digo que a concorrência provavelmente vai aumentar essa taxa dele em 3 meses (pegadinha), enquanto nós somos honestos.", scores: { persuasion: 6, emotional: 5, action: 5, fit: 4 } }
+                ]
+            },
+            {
+                category: "Gestão de Pipeline",
+                text: "Você tem 20 leads que enviaram os documentos há 3 dias, mas não assinaram o contrato final, e 50 leads novos que caíram hoje no seu funil Inbound. Como você prioriza seu dia?",
+                options: [
+                    { text: "Ligo para os 50 novos para tentar fechar rápido e bater o volume, já que os de 3 dias provavelmente esfriaram.", scores: { persuasion: 5, emotional: 5, action: 6, fit: 4 } },
+                    { text: "Foco nos 20 que já mandaram documentação, ligo um por um gerando urgência (senso de escassez) para garantir essas assinaturas (dinheiro na mesa), e depois ataco os leads novos.", scores: { persuasion: 9, emotional: 8, action: 10, fit: 10 } },
+                    { text: "Mando um e-mail em massa para todos e atendo quem responder primeiro no WhatsApp.", scores: { persuasion: 2, emotional: 3, action: 2, fit: 1 } },
+                    { text: "Divido meu dia meio a meio de forma exata, sem dar prioridade máxima à etapa do funil que está mais próxima do fechamento.", scores: { persuasion: 4, emotional: 6, action: 5, fit: 3 } }
+                ]
+            },
+            {
+                category: "Cenário Zapizi: ZAP PRO",
+                text: "Um lead (dono de uma rede de padarias) reclama que seus caixas perdem muito tempo conferindo comprovante de PIX no celular do cliente e sofre com fraudes. Como você vende a Zapizi para ele?",
+                options: [
+                    { text: "Digo que nossas máquinas são modernas, rodam sistema Android e ficam ótimas no balcão da padaria.", scores: { persuasion: 2, emotional: 4, action: 3, fit: 2 } },
+                    { text: "Ofereço taxas de crédito muito agressivas para ele incentivar os clientes a usarem mais cartão ao invés de PIX.", scores: { persuasion: 5, emotional: 5, action: 5, fit: 4 } },
+                    { text: "Apresento a ZAP PRO, provando que o PIX sai direto no comprovante impresso da máquina em segundos, eliminando fraudes, filas no caixa e economizando horas do financeiro dele.", scores: { persuasion: 10, emotional: 8, action: 10, fit: 10 } },
+                    { text: "Pergunto direto qual a taxa dele hoje e quanto ele estaria disposto a pagar no aluguel da nossa máquina.", scores: { persuasion: 3, emotional: 2, action: 4, fit: 2 } }
+                ]
+            },
+            {
+                category: "Resiliência & EQ",
+                text: "Já é dia 25 do mês, você está com 60% da sua meta batida e acabou de perder a sua maior negociação (que salvaria seu mês) para um concorrente por causa de preço. Qual a sua atitude nos últimos 5 dias?",
+                options: [
+                    { text: "Aceito que o mês está perdido, foco em prospectar calmamente para garantir o pipeline do mês seguinte.", scores: { persuasion: 3, emotional: 5, action: 2, fit: 2 } },
+                    { text: "Fico desmotivado, reclamo com o time que os preços da concorrência estão impossíveis e que a meta está irreal.", scores: { persuasion: 1, emotional: 0, action: 1, fit: 0 } },
+                    { text: "Analiso rapidamente o motivo da perda, ajusto meu pitch, e ligo para o dobro de clientes por dia focando em tickets menores com ciclo de vendas mais rápido para compensar e bater a meta.", scores: { persuasion: 9, emotional: 10, action: 10, fit: 10 } },
+                    { text: "Ligo desesperado para o cliente que perdi pedindo pelo amor de Deus para ele reconsiderar porque preciso bater a meta.", scores: { persuasion: 2, emotional: 1, action: 4, fit: 1 } }
+                ]
+            },
+            {
+                category: "Venda de Valor vs Preço",
+                text: "Um lead inbound do nicho de farmácias liga apressado e só quer saber uma coisa: 'Qual é a taxa de débito de vocês?'. Como você conduz?",
+                options: [
+                    { text: "Passo a taxa logo de cara para ser objetivo e não perder o tempo dele, já que ele tem pressa.", scores: { persuasion: 3, emotional: 4, action: 5, fit: 2 } },
+                    { text: "Faço perguntas para entender o volume dele de PIX, quantas filiais tem, e mostro como a conciliação da Zapizi pode economizar tempo, ancorando o valor antes de falar de preço.", scores: { persuasion: 10, emotional: 8, action: 9, fit: 10 } },
+                    { text: "Digo que nossa taxa é a melhor do mercado, garantindo cobrir qualquer oferta, mesmo sem saber o que ele tem hoje.", scores: { persuasion: 4, emotional: 3, action: 6, fit: 1 } },
+                    { text: "Pergunto qual taxa ele tem atualmente e digo que cubro imediatamente se ele fechar agora.", scores: { persuasion: 5, emotional: 3, action: 7, fit: 3 } }
+                ]
+            },
+            {
+                category: "Trabalho em Equipe",
+                text: "Para fechar uma venda muito difícil que fará você bater a meta, o cliente exige um relatório customizado que a Zapizi não tem no sistema (mas que ele não vai usar nos primeiros 3 meses). O que você faz?",
+                options: [
+                    { text: "Prometo que temos. O importante é fechar a venda, colocar a comissão no bolso e depois o time de CS ou Produto que se vire para criar.", scores: { persuasion: 6, emotional: 2, action: 8, fit: 0 } },
+                    { text: "Digo que temos o relatório e torço para ele esquecer de cobrar isso depois que estiver usando a máquina.", scores: { persuasion: 5, emotional: 2, action: 5, fit: 0 } },
+                    { text: "Sou transparente, digo que não temos isso agora, mas mostro como nossos relatórios atuais já resolvem 90% da dor dele. Garanto uma venda saudável e sem churn (cancelamento) no futuro.", scores: { persuasion: 9, emotional: 10, action: 8, fit: 10 } },
+                    { text: "Desisto da venda na hora porque sei que não temos o que ele quer e não tento contornar a objeção.", scores: { persuasion: 1, emotional: 4, action: 1, fit: 2 } }
+                ]
+            },
+            {
+                category: "Qualificação",
+                text: "Cai um lead Inbound dizendo: 'Sou pessoa física, vendo bolo de pote em casa e faturo R$ 500 por mês. Quero a máquina ZAP PRO que imprime PIX.' O foco da Zapizi é B2B com ticket médio maior para esse equipamento. O que você faz?",
+                options: [
+                    { text: "Gasto 40 minutos no telefone tentando convencê-la a pegar a ZAP PRO com isenção de aluguel para ganhar mais uma ativação.", scores: { persuasion: 5, emotional: 5, action: 5, fit: 1 } },
+                    { text: "Qualifico rapidamente. Explico com educação que a ZAP PRO exige CNPJ e um faturamento mínimo, ofereço nossa solução de entrada (Link de Pagamento) gastando no máximo 5 minutos.", scores: { persuasion: 9, emotional: 8, action: 10, fit: 10 } },
+                    { text: "Ignoro a mensagem do lead no WhatsApp porque o faturamento é baixo e a comissão não vale meu tempo.", scores: { persuasion: 1, emotional: 2, action: 1, fit: 0 } },
+                    { text: "Prometo a ela que pode ter a máquina se pagar uma taxa de adesão e aluguel altíssimos, tentando tirar algum lucro.", scores: { persuasion: 6, emotional: 2, action: 6, fit: 2 } }
+                ]
+            },
+            {
+                category: "Inteligência Emocional",
+                text: "Você liga para um prospect e ele é extremamente arrogante, dizendo que 'empresas de maquininha são todas iguais e só querem arrancar dinheiro' e que você é só 'mais um vendedor chato'.",
+                options: [
+                    { text: "Bato boca com ele, defendo a Zapizi com unhas e dentes e digo que ele está perdendo uma grande oportunidade.", scores: { persuasion: 2, emotional: 1, action: 4, fit: 1 } },
+                    { text: "Desligo na cara dele educadamente. Não sou pago para ouvir desaforo de lead desqualificado.", scores: { persuasion: 1, emotional: 3, action: 2, fit: 2 } },
+                    { text: "Mantenho a calma, dou razão parcial ('Entendo sua frustração, o mercado tem muita empresa ruim mesmo'), e uso isso para mostrar como a Zapizi se diferencia focando no sucesso dele (CS).", scores: { persuasion: 10, emotional: 10, action: 9, fit: 10 } },
+                    { text: "Fico calado ouvindo, peço desculpas repetidamente por incomodar e desligo em seguida.", scores: { persuasion: 2, emotional: 2, action: 1, fit: 2 } }
+                ]
+            },
+            {
+                category: "Fit Cultural: Visão Estratégica",
+                text: "Na Zapizi, buscamos não apenas bater meta de ativações de máquinas, mas trazer clientes saudáveis (Alto TPV e baixo Churn). O que define um vendedor Top Performer aqui?",
+                options: [
+                    { text: "Aquele que vende o máximo de máquinas possível, independentemente se o cliente fatura R$ 100 ou R$ 100 mil. Volume é rei.", scores: { persuasion: 6, emotional: 3, action: 8, fit: 2 } },
+                    { text: "Aquele que foca em dar desconto máximo sempre, para garantir que nunca vai perder da concorrência.", scores: { persuasion: 4, emotional: 2, action: 5, fit: 1 } },
+                    { text: "Aquele que atua como consultor: qualifica bem, entende o modelo de negócio, vende valor ao invés de preço, e traz clientes sustentáveis que usam nossas soluções de ponta a ponta.", scores: { persuasion: 10, emotional: 9, action: 10, fit: 10 } },
+                    { text: "Aquele que preenche o CRM com perfeição, é amigo de todos na empresa, mas fica na média em fechamentos.", scores: { persuasion: 2, emotional: 6, action: 3, fit: 4 } }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let candidateName = '';
+        let candidateEmail = '';
+        let candidatePhone = '';
+        let candidateLinkedin = '';
+        let answers = [];
+
+        // Elements
+        const introScreen = document.getElementById('intro-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        
+        const startBtn = document.getElementById('start-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        
+        const questionText = document.getElementById('question-text');
+        const questionCategory = document.getElementById('question-category');
+        const questionCounter = document.getElementById('question-counter');
+        const optionsContainer = document.getElementById('options-container');
+        const progressFill = document.getElementById('progress-fill');
+
+        // State initialization
+        startBtn.addEventListener('click', () => {
+            const name = document.getElementById('candidate-name').value.trim();
+            const email = document.getElementById('candidate-email').value.trim();
+            const phone = document.getElementById('candidate-phone').value.trim();
+            const linkedin = document.getElementById('candidate-linkedin').value.trim();
+            const salary = document.getElementById('candidate-salary').value.trim();
+            
+            if(!name || !email || !phone || !linkedin || !salary) {
+                alert("Por favor, preencha todos os campos obrigatórios (incluindo LinkedIn e Pretensão Salarial).");
+                return;
+            }
+            
+            if(phone.length < 10) {
+                alert("Por favor, informe um telefone válido com DDD.");
+                return;
+            }
+
+            candidateName = name;
+            candidateEmail = email;
+            candidatePhone = phone;
+            candidateLinkedin = linkedin;
+            candidateSalary = salary;
+            answers = new Array(questions.length).fill(null);
+            
+            introScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            renderQuestion();
+        });
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            questionText.innerText = q.text;
+            questionCategory.innerText = q.category;
+            questionCounter.innerText = `${currentQuestion + 1}/${questions.length}`;
+            
+            const progress = ((currentQuestion) / questions.length) * 100;
+            progressFill.style.width = `${progress}%`;
+
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = 'option';
+                if(answers[currentQuestion] === index) {
+                    optDiv.classList.add('selected');
+                }
+                
+                optDiv.innerHTML = `
+                    <div class="radio-btn"></div>
+                    <div>${opt.text}</div>
+                `;
+                
+                optDiv.addEventListener('click', () => {
+                    document.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
+                    optDiv.classList.add('selected');
+                    answers[currentQuestion] = index;
+                    nextBtn.disabled = false;
+                });
+                
+                optionsContainer.appendChild(optDiv);
+            });
+
+            prevBtn.style.display = currentQuestion > 0 ? 'block' : 'none';
+            nextBtn.innerText = currentQuestion === questions.length - 1 ? 'Finalizar' : 'Próxima';
+            nextBtn.disabled = answers[currentQuestion] === null;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        });
+
+        async function finishQuiz() {
+            quizScreen.classList.add('hidden');
+            
+            const scores = calculateScores();
+            
+            // Show loading
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            
+            try {
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: candidateName,
+                        email: candidateEmail,
+                        phone: candidatePhone,
+                        linkedin: candidateLinkedin,
+                        salary: candidateSalary,
+                        finalScore: scores.finalScore,
+                        persuasion: scores.pPersuasion,
+                        emotional: scores.pEmotional,
+                        action: scores.pAction,
+                        fit: scores.pFit
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Falha ao salvar');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Os resultados foram calculados, mas houve um erro ao enviar a sua candidatura. Tire um print da próxima tela.');
+            } finally {
+                document.getElementById('loading-overlay').classList.add('hidden');
+                showResultsScreen(scores);
+            }
+        }
+
+        function calculateScores() {
+            let total = { persuasion: 0, emotional: 0, action: 0, fit: 0 };
+            let maxTotal = { persuasion: 0, emotional: 0, action: 0, fit: 0 };
+
+            questions.forEach((q, i) => {
+                const selectedOpt = q.options[answers[i]];
+                
+                total.persuasion += selectedOpt.scores.persuasion;
+                total.emotional += selectedOpt.scores.emotional;
+                total.action += selectedOpt.scores.action;
+                total.fit += selectedOpt.scores.fit;
+
+                // Max possible for this question
+                let maxP = 0, maxE = 0, maxA = 0, maxF = 0;
+                q.options.forEach(opt => {
+                    if(opt.scores.persuasion > maxP) maxP = opt.scores.persuasion;
+                    if(opt.scores.emotional > maxE) maxE = opt.scores.emotional;
+                    if(opt.scores.action > maxA) maxA = opt.scores.action;
+                    if(opt.scores.fit > maxF) maxF = opt.scores.fit;
+                });
+
+                maxTotal.persuasion += maxP;
+                maxTotal.emotional += maxE;
+                maxTotal.action += maxA;
+                maxTotal.fit += maxF;
+            });
+
+            const pPersuasion = Math.round((total.persuasion / maxTotal.persuasion) * 100);
+            const pEmotional = Math.round((total.emotional / maxTotal.emotional) * 100);
+            const pAction = Math.round((total.action / maxTotal.action) * 100);
+            const pFit = Math.round((total.fit / maxTotal.fit) * 100);
+
+            // Global score (weighted: Fit 30%, Persuasion 30%, Emotional 20%, Action 20%)
+            const finalScore = Math.round((pFit * 0.3) + (pPersuasion * 0.3) + (pEmotional * 0.2) + (pAction * 0.2));
+
+            return { finalScore, pPersuasion, pEmotional, pAction, pFit };
+        }
+        
+        function showResultsScreen(scores) {
+            resultsScreen.classList.remove('hidden');
+            document.getElementById('res-name').innerText = candidateName.split(' ')[0];
+            
+            // Animate Numbers and Bars
+            animateValue("final-score", 0, scores.finalScore, 1500);
+            
+            setTimeout(() => {
+                document.getElementById('bar-persuasion').style.width = `${scores.pPersuasion}%`;
+                document.getElementById('score-persuasion').innerText = `${scores.pPersuasion}%`;
+
+                document.getElementById('bar-emotional').style.width = `${scores.pEmotional}%`;
+                document.getElementById('score-emotional').innerText = `${scores.pEmotional}%`;
+
+                document.getElementById('bar-action').style.width = `${scores.pAction}%`;
+                document.getElementById('score-action').innerText = `${scores.pAction}%`;
+
+                document.getElementById('bar-fit').style.width = `${scores.pFit}%`;
+                document.getElementById('score-fit').innerText = `${scores.pFit}%`;
+                
+                // Color the main circle based on score
+                const circle = document.querySelector('.score-circle');
+                if(scores.finalScore >= 80) { circle.style.borderColor = '#10B981'; circle.style.boxShadow = '0 0 30px rgba(16, 185, 129, 0.3)'; }
+                else if(scores.finalScore >= 60) { circle.style.borderColor = '#F59E0B'; circle.style.boxShadow = '0 0 30px rgba(245, 158, 11, 0.3)'; }
+                else { circle.style.borderColor = '#EF4444'; circle.style.boxShadow = '0 0 30px rgba(239, 68, 68, 0.3)'; }
+
+            }, 500);
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+</html>
