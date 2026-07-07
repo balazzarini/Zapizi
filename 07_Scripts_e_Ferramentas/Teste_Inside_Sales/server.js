@@ -1,5 +1,5 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const path = require('path');
 
 const app = express();
@@ -10,16 +10,8 @@ app.use(express.json());
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Configuração do Nodemailer (SMTP Zapizi)
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.zapizi.com.br',
-    port: process.env.SMTP_PORT || 465,
-    secure: process.env.SMTP_PORT == 465, // true para 465, false para outras portas
-    auth: {
-        user: process.env.SMTP_USER || 'seu-email@zapizi.com.br',
-        pass: process.env.SMTP_PASS || 'sua-senha'
-    }
-});
+// Configuração da API do Resend (hardcoded da Zapizi)
+const resend = new Resend(process.env.RESEND_API_KEY || 're_P1x5iQ9c_GuyhvknEwNhbwAfXTZDJ6hyJ');
 
 // API Route to submit test
 app.post('/api/submit', async (req, res) => {
@@ -30,8 +22,8 @@ app.post('/api/submit', async (req, res) => {
     }
 
     const mailOptions = {
-        from: `"Avaliação Inside Sales Zapizi" <${process.env.SMTP_USER || 'onboarding@zapizi.com.br'}>`,
-        to: process.env.DESTINATION_EMAIL || 'balazzarini@gmail.com', // Envia para este email
+        from: '"Avaliação Inside Sales Zapizi" <onboarding@resend.dev>', // Endereço padrão de teste do Resend
+        to: 'balazzarini@gmail.com', // Envia para o email cadastrado na conta Resend
         subject: `Novo Teste Finalizado - Vendas: ${name} (Score: ${finalScore}%)`,
         html: `
             <h2>Novo Candidato a Inside Sales: ${name}</h2>
@@ -66,12 +58,18 @@ app.post('/api/submit', async (req, res) => {
     };
 
     try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`Email enviado via SMTP com ID: ${info.messageId}`);
+        const { data, error } = await resend.emails.send(mailOptions);
+        
+        if (error) {
+            console.error('Erro da API do Resend:', error);
+            return res.status(500).json({ error: 'Falha ao enviar e-mail via API.' });
+        }
+        
+        console.log(`Email enviado via Resend com ID: ${data?.id}`);
         res.json({ success: true });
     } catch (error) {
         console.error('Erro crítico no servidor ao enviar e-mail:', error);
-        res.status(500).json({ error: 'Falha ao processar os resultados e enviar email.' });
+        res.status(500).json({ error: 'Falha ao processar os resultados.' });
     }
 });
 
