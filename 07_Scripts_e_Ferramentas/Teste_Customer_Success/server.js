@@ -16,10 +16,10 @@ const resend = new Resend(process.env.RESEND_API_KEY || 're_P1x5iQ9c_GuyhvknEwNh
 
 // API Route to submit test
 app.post('/api/submit', async (req, res) => {
-    const { name, email, phone, linkedin, finalScore, analytical, emotional, action, fit, disc, predominant } = req.body;
+    const { name, email, phone, linkedin, salary, finalScore, analytical, emotional, action, fit, disc, predominant } = req.body;
     
-    if (!name || !email || !phone || !linkedin) {
-        return res.status(400).json({ error: 'Name, email, phone, and linkedin are required.' });
+    if (!name || !email || !phone || !linkedin || !salary) {
+        return res.status(400).json({ error: 'Name, email, phone, linkedin, and salary are required.' });
     }
 
     const mailOptions = {
@@ -31,6 +31,7 @@ app.post('/api/submit', async (req, res) => {
             <p><strong>E-mail:</strong> ${email}</p>
             <p><strong>Telefone/WhatsApp:</strong> ${phone}</p>
             <p><strong>LinkedIn:</strong> <a href="${linkedin}">${linkedin}</a></p>
+            <p><strong>Pretensão Salarial:</strong> ${salary}</p>
             <hr>
             <h3>Resultados da Avaliação</h3>
             <p><strong>Score Global (Fit Score):</strong> ${finalScore}%</p>
@@ -55,6 +56,8 @@ app.post('/api/submit', async (req, res) => {
 {
   "nome": "${name}",
   "linkedin": "${linkedin}",
+  "telefone": "${phone}",
+  "pretensao_salarial": "${salary}",
   "fit_score": ${finalScore},
   "skills": { "analytical": ${analytical}, "emotional": ${emotional}, "action": ${action}, "fit": ${fit} },
   "disc": { "D": ${disc?.D || 0}, "I": ${disc?.I || 0}, "S": ${disc?.S || 0}, "C": ${disc?.C || 0} },

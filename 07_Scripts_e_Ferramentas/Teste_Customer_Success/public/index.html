@@ -371,6 +371,10 @@
                 <label for="candidate-linkedin">Perfil do LinkedIn (URL)</label>
                 <input type="url" id="candidate-linkedin" placeholder="https://linkedin.com/in/seu-perfil">
             </div>
+            <div class="form-group">
+                <label for="candidate-salary">Pretensão Salarial</label>
+                <input type="text" id="candidate-salary" placeholder="Ex: R$ 3.500,00">
+            </div>
 
             <button class="btn" id="start-btn">Iniciar Avaliação (30 perguntas)</button>
         </div>
@@ -792,6 +796,7 @@
         let candidateEmail = '';
         let candidatePhone = '';
         let candidateLinkedin = '';
+        let candidateSalary = '';
         let answers = [];
 
         // Elements
@@ -815,9 +820,10 @@
             const email = document.getElementById('candidate-email').value.trim();
             const phone = document.getElementById('candidate-phone').value.trim();
             const linkedin = document.getElementById('candidate-linkedin').value.trim();
+            const salary = document.getElementById('candidate-salary').value.trim();
             
-            if(!name || !email || !phone || !linkedin) {
-                alert("Por favor, preencha todos os campos obrigatórios (incluindo LinkedIn).");
+            if(!name || !email || !phone || !linkedin || !salary) {
+                alert("Por favor, preencha todos os campos obrigatórios (incluindo Pretensão Salarial).");
                 return;
             }
             
@@ -830,6 +836,7 @@
             candidateEmail = email;
             candidatePhone = phone;
             candidateLinkedin = linkedin;
+            candidateSalary = salary;
             answers = new Array(questions.length).fill(null);
             
             introScreen.classList.add('hidden');
@@ -908,6 +915,7 @@
                         email: candidateEmail,
                         phone: candidatePhone,
                         linkedin: candidateLinkedin,
+                        salary: candidateSalary,
                         finalScore: scores.finalScore,
                         analytical: scores.pAnalytical,
                         emotional: scores.pEmotional,
