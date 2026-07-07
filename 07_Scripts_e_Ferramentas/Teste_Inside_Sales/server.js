@@ -15,7 +15,7 @@ const resend = new Resend(process.env.RESEND_API_KEY || 're_P1x5iQ9c_GuyhvknEwNh
 
 // API Route to submit test
 app.post('/api/submit', async (req, res) => {
-    const { name, email, phone, linkedin, salary, finalScore, persuasion, emotional, action, fit } = req.body;
+    const { name, email, phone, linkedin, salary, finalScore, persuasion, emotional, action, fit, discD, discI, discS, discC } = req.body;
     
     if (!name || !email || !phone || !linkedin || !salary) {
         return res.status(400).json({ error: 'Name, email, phone, linkedin, and salary are required.' });
@@ -41,6 +41,14 @@ app.post('/api/submit', async (req, res) => {
                 <li>💙 Fit Cultural (Zapizi Way): ${fit}%</li>
             </ul>
             <hr>
+            <h3>Perfil DISC</h3>
+            <ul>
+                <li>🔥 Dominância (D): ${discD}%</li>
+                <li>🗣️ Influência (I): ${discI}%</li>
+                <li>🤝 Estabilidade (S): ${discS}%</li>
+                <li>📊 Conformidade (C): ${discC}%</li>
+            </ul>
+            <hr>
             <h3>Cápsula de Dados para IA (Copie o bloco abaixo)</h3>
             <pre><code>
 {
@@ -49,7 +57,8 @@ app.post('/api/submit', async (req, res) => {
   "telefone": "${phone}",
   "pretensao_salarial": "${salary}",
   "fit_score": ${finalScore},
-  "skills": { "persuasion": ${persuasion}, "emotional": ${emotional}, "action": ${action}, "fit": ${fit} }
+  "skills": { "persuasion": ${persuasion}, "emotional": ${emotional}, "action": ${action}, "fit": ${fit} },
+  "disc": { "d": ${discD}, "i": ${discI}, "s": ${discS}, "c": ${discC} }
 }
             </code></pre>
             <hr>

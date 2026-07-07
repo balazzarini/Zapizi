@@ -373,7 +373,7 @@
                 <input type="text" id="candidate-salary" placeholder="Ex: R$ 3.000,00 + Comissão">
             </div>
 
-            <button class="btn" id="start-btn">Iniciar Avaliação (10 perguntas)</button>
+            <button class="btn" id="start-btn">Iniciar Avaliação (30 perguntas)</button>
         </div>
 
         <div class="card hidden" id="quiz-screen">
@@ -385,7 +385,7 @@
             </div>
             
             <div class="question-header">
-                <span class="badge" id="question-category">Comportamental</span>
+                
                 <span style="color: var(--text-muted); font-size: 0.9rem;" id="question-counter">1/10</span>
             </div>
 
@@ -419,6 +419,7 @@
                 </p>
 
                 <div class="radar-chart">
+                    <h3 style="margin-top: 1rem; color: #fff;">Comportamental & Metas</h3>
                     <div class="metric">
                         <div class="metric-header">
                             <span>🎯 Persuasão & Negociação</span>
@@ -458,114 +459,240 @@
                             <div class="metric-fill" id="bar-fit" style="background-color: #8B5CF6;"></div>
                         </div>
                     </div>
+
+                    <hr style="border-color: var(--border); margin: 2rem 0;">
+                    
+                    <h3 style="margin-top: 0; color: #fff;">Perfil DISC</h3>
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🔥 Dominância (D)</span>
+                            <span id="score-d">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-d" style="background-color: #EF4444;"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🗣️ Influência (I)</span>
+                            <span id="score-i">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-i" style="background-color: #F59E0B;"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🤝 Estabilidade (S)</span>
+                            <span id="score-s">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-s" style="background-color: #10B981;"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>📊 Conformidade (C)</span>
+                            <span id="score-c">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-c" style="background-color: #3B82F6;"></div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
             </div>
         </div>
     </div>
 
     <script>
         const questions = [
-            {
-                category: "Abordagem & Outbound",
-                text: "Você liga para o dono de um restaurante famoso que não conhece a Zapizi. Ele atende e diz: 'Estou ocupado agora, e já uso a Stone há 5 anos, não quero trocar.' O que você faz?",
-                options: [
-                    { text: "Agradeço e desligo, marcando no CRM para retornar na semana que vem para não incomodá-lo.", scores: { persuasion: 1, emotional: 3, action: 2, fit: 1 } },
-                    { text: "Pergunto rapidamente: 'A Stone está te cobrando aluguel e te repassando o PIX com taxa? Só me dê 30 segundos, se eu não provar que posso cortar seu custo, eu desligo.'", scores: { persuasion: 10, emotional: 8, action: 10, fit: 10 } },
-                    { text: "Peço desculpas por incomodar e pergunto se posso mandar um e-mail com nossa apresentação comercial para ele ver depois.", scores: { persuasion: 3, emotional: 4, action: 3, fit: 3 } },
-                    { text: "Digo agressivamente que a Stone tem taxas abusivas, que ele está perdendo dinheiro e sendo enganado.", scores: { persuasion: 4, emotional: 1, action: 6, fit: 2 } }
-                ]
-            },
-            {
-                category: "Negociação & Contorno de Objeções",
-                text: "O cliente quer fechar, mas exige uma taxa de débito de 0.79% porque a concorrência ofereceu isso. Nossa taxa mínima rentável aprovada para o volume dele é 0.99%. O que você faz?",
-                options: [
-                    { text: "Digo que infelizmente não posso cobrir e deixo o cliente ir embora, pois regras são regras.", scores: { persuasion: 2, emotional: 4, action: 2, fit: 2 } },
-                    { text: "Ofereço 0.79% por conta própria para não perder a venda e depois vejo com o gerente se ele aprova a exceção.", scores: { persuasion: 5, emotional: 2, action: 6, fit: 0 } },
-                    { text: "Foco no valor agregado: mostro que a Zapizi oferece suporte humanizado (CS dedicado) e a máquina ZAP PRO que concilia PIX rápido, compensando a diferença de 0.20% com mais conversão no caixa.", scores: { persuasion: 10, emotional: 8, action: 9, fit: 10 } },
-                    { text: "Digo que a concorrência provavelmente vai aumentar essa taxa dele em 3 meses (pegadinha), enquanto nós somos honestos.", scores: { persuasion: 6, emotional: 5, action: 5, fit: 4 } }
-                ]
-            },
-            {
-                category: "Gestão de Pipeline",
-                text: "Você tem 20 leads que enviaram os documentos há 3 dias, mas não assinaram o contrato final, e 50 leads novos que caíram hoje no seu funil Inbound. Como você prioriza seu dia?",
-                options: [
-                    { text: "Ligo para os 50 novos para tentar fechar rápido e bater o volume, já que os de 3 dias provavelmente esfriaram.", scores: { persuasion: 5, emotional: 5, action: 6, fit: 4 } },
-                    { text: "Foco nos 20 que já mandaram documentação, ligo um por um gerando urgência (senso de escassez) para garantir essas assinaturas (dinheiro na mesa), e depois ataco os leads novos.", scores: { persuasion: 9, emotional: 8, action: 10, fit: 10 } },
-                    { text: "Mando um e-mail em massa para todos e atendo quem responder primeiro no WhatsApp.", scores: { persuasion: 2, emotional: 3, action: 2, fit: 1 } },
-                    { text: "Divido meu dia meio a meio de forma exata, sem dar prioridade máxima à etapa do funil que está mais próxima do fechamento.", scores: { persuasion: 4, emotional: 6, action: 5, fit: 3 } }
-                ]
-            },
-            {
-                category: "Cenário Zapizi: ZAP PRO",
-                text: "Um lead (dono de uma rede de padarias) reclama que seus caixas perdem muito tempo conferindo comprovante de PIX no celular do cliente e sofre com fraudes. Como você vende a Zapizi para ele?",
-                options: [
-                    { text: "Digo que nossas máquinas são modernas, rodam sistema Android e ficam ótimas no balcão da padaria.", scores: { persuasion: 2, emotional: 4, action: 3, fit: 2 } },
-                    { text: "Ofereço taxas de crédito muito agressivas para ele incentivar os clientes a usarem mais cartão ao invés de PIX.", scores: { persuasion: 5, emotional: 5, action: 5, fit: 4 } },
-                    { text: "Apresento a ZAP PRO, provando que o PIX sai direto no comprovante impresso da máquina em segundos, eliminando fraudes, filas no caixa e economizando horas do financeiro dele.", scores: { persuasion: 10, emotional: 8, action: 10, fit: 10 } },
-                    { text: "Pergunto direto qual a taxa dele hoje e quanto ele estaria disposto a pagar no aluguel da nossa máquina.", scores: { persuasion: 3, emotional: 2, action: 4, fit: 2 } }
-                ]
-            },
-            {
-                category: "Resiliência & EQ",
-                text: "Já é dia 25 do mês, você está com 60% da sua meta batida e acabou de perder a sua maior negociação (que salvaria seu mês) para um concorrente por causa de preço. Qual a sua atitude nos últimos 5 dias?",
-                options: [
-                    { text: "Aceito que o mês está perdido, foco em prospectar calmamente para garantir o pipeline do mês seguinte.", scores: { persuasion: 3, emotional: 5, action: 2, fit: 2 } },
-                    { text: "Fico desmotivado, reclamo com o time que os preços da concorrência estão impossíveis e que a meta está irreal.", scores: { persuasion: 1, emotional: 0, action: 1, fit: 0 } },
-                    { text: "Analiso rapidamente o motivo da perda, ajusto meu pitch, e ligo para o dobro de clientes por dia focando em tickets menores com ciclo de vendas mais rápido para compensar e bater a meta.", scores: { persuasion: 9, emotional: 10, action: 10, fit: 10 } },
-                    { text: "Ligo desesperado para o cliente que perdi pedindo pelo amor de Deus para ele reconsiderar porque preciso bater a meta.", scores: { persuasion: 2, emotional: 1, action: 4, fit: 1 } }
-                ]
-            },
-            {
-                category: "Venda de Valor vs Preço",
-                text: "Um lead inbound do nicho de farmácias liga apressado e só quer saber uma coisa: 'Qual é a taxa de débito de vocês?'. Como você conduz?",
-                options: [
-                    { text: "Passo a taxa logo de cara para ser objetivo e não perder o tempo dele, já que ele tem pressa.", scores: { persuasion: 3, emotional: 4, action: 5, fit: 2 } },
-                    { text: "Faço perguntas para entender o volume dele de PIX, quantas filiais tem, e mostro como a conciliação da Zapizi pode economizar tempo, ancorando o valor antes de falar de preço.", scores: { persuasion: 10, emotional: 8, action: 9, fit: 10 } },
-                    { text: "Digo que nossa taxa é a melhor do mercado, garantindo cobrir qualquer oferta, mesmo sem saber o que ele tem hoje.", scores: { persuasion: 4, emotional: 3, action: 6, fit: 1 } },
-                    { text: "Pergunto qual taxa ele tem atualmente e digo que cubro imediatamente se ele fechar agora.", scores: { persuasion: 5, emotional: 3, action: 7, fit: 3 } }
-                ]
-            },
-            {
-                category: "Trabalho em Equipe",
-                text: "Para fechar uma venda muito difícil que fará você bater a meta, o cliente exige um relatório customizado que a Zapizi não tem no sistema (mas que ele não vai usar nos primeiros 3 meses). O que você faz?",
-                options: [
-                    { text: "Prometo que temos. O importante é fechar a venda, colocar a comissão no bolso e depois o time de CS ou Produto que se vire para criar.", scores: { persuasion: 6, emotional: 2, action: 8, fit: 0 } },
-                    { text: "Digo que temos o relatório e torço para ele esquecer de cobrar isso depois que estiver usando a máquina.", scores: { persuasion: 5, emotional: 2, action: 5, fit: 0 } },
-                    { text: "Sou transparente, digo que não temos isso agora, mas mostro como nossos relatórios atuais já resolvem 90% da dor dele. Garanto uma venda saudável e sem churn (cancelamento) no futuro.", scores: { persuasion: 9, emotional: 10, action: 8, fit: 10 } },
-                    { text: "Desisto da venda na hora porque sei que não temos o que ele quer e não tento contornar a objeção.", scores: { persuasion: 1, emotional: 4, action: 1, fit: 2 } }
-                ]
-            },
-            {
-                category: "Qualificação",
-                text: "Cai um lead Inbound dizendo: 'Sou pessoa física, vendo bolo de pote em casa e faturo R$ 500 por mês. Quero a máquina ZAP PRO que imprime PIX.' O foco da Zapizi é B2B com ticket médio maior para esse equipamento. O que você faz?",
-                options: [
-                    { text: "Gasto 40 minutos no telefone tentando convencê-la a pegar a ZAP PRO com isenção de aluguel para ganhar mais uma ativação.", scores: { persuasion: 5, emotional: 5, action: 5, fit: 1 } },
-                    { text: "Qualifico rapidamente. Explico com educação que a ZAP PRO exige CNPJ e um faturamento mínimo, ofereço nossa solução de entrada (Link de Pagamento) gastando no máximo 5 minutos.", scores: { persuasion: 9, emotional: 8, action: 10, fit: 10 } },
-                    { text: "Ignoro a mensagem do lead no WhatsApp porque o faturamento é baixo e a comissão não vale meu tempo.", scores: { persuasion: 1, emotional: 2, action: 1, fit: 0 } },
-                    { text: "Prometo a ela que pode ter a máquina se pagar uma taxa de adesão e aluguel altíssimos, tentando tirar algum lucro.", scores: { persuasion: 6, emotional: 2, action: 6, fit: 2 } }
-                ]
-            },
-            {
-                category: "Inteligência Emocional",
-                text: "Você liga para um prospect e ele é extremamente arrogante, dizendo que 'empresas de maquininha são todas iguais e só querem arrancar dinheiro' e que você é só 'mais um vendedor chato'.",
-                options: [
-                    { text: "Bato boca com ele, defendo a Zapizi com unhas e dentes e digo que ele está perdendo uma grande oportunidade.", scores: { persuasion: 2, emotional: 1, action: 4, fit: 1 } },
-                    { text: "Desligo na cara dele educadamente. Não sou pago para ouvir desaforo de lead desqualificado.", scores: { persuasion: 1, emotional: 3, action: 2, fit: 2 } },
-                    { text: "Mantenho a calma, dou razão parcial ('Entendo sua frustração, o mercado tem muita empresa ruim mesmo'), e uso isso para mostrar como a Zapizi se diferencia focando no sucesso dele (CS).", scores: { persuasion: 10, emotional: 10, action: 9, fit: 10 } },
-                    { text: "Fico calado ouvindo, peço desculpas repetidamente por incomodar e desligo em seguida.", scores: { persuasion: 2, emotional: 2, action: 1, fit: 2 } }
-                ]
-            },
-            {
-                category: "Fit Cultural: Visão Estratégica",
-                text: "Na Zapizi, buscamos não apenas bater meta de ativações de máquinas, mas trazer clientes saudáveis (Alto TPV e baixo Churn). O que define um vendedor Top Performer aqui?",
-                options: [
-                    { text: "Aquele que vende o máximo de máquinas possível, independentemente se o cliente fatura R$ 100 ou R$ 100 mil. Volume é rei.", scores: { persuasion: 6, emotional: 3, action: 8, fit: 2 } },
-                    { text: "Aquele que foca em dar desconto máximo sempre, para garantir que nunca vai perder da concorrência.", scores: { persuasion: 4, emotional: 2, action: 5, fit: 1 } },
-                    { text: "Aquele que atua como consultor: qualifica bem, entende o modelo de negócio, vende valor ao invés de preço, e traz clientes sustentáveis que usam nossas soluções de ponta a ponta.", scores: { persuasion: 10, emotional: 9, action: 10, fit: 10 } },
-                    { text: "Aquele que preenche o CRM com perfeição, é amigo de todos na empresa, mas fica na média em fechamentos.", scores: { persuasion: 2, emotional: 6, action: 3, fit: 4 } }
-                ]
-            }
-        ];
+    // --- SOFT SKILLS (20 questions) ---
+    { text: "Você liga para o dono de um restaurante famoso que não conhece a Zapizi. Ele atende e diz: 'Estou ocupado agora, já uso a Stone há 5 anos'. O que você faz?", options: [
+        { text: "Agradeço e desligo, para não incomodar.", scores: { persuasion: 1, emotional: 3, action: 2, fit: 1 } },
+        { text: "Pergunto rápido: 'A Stone te repassa PIX com taxa? Me dê 30s, se eu não cortar seu custo eu desligo.'", scores: { persuasion: 10, emotional: 8, action: 10, fit: 10 } },
+        { text: "Peço para mandar um e-mail com apresentação.", scores: { persuasion: 3, emotional: 4, action: 3, fit: 3 } },
+        { text: "Digo que a Stone tem taxas abusivas e ele perde dinheiro.", scores: { persuasion: 4, emotional: 1, action: 6, fit: 2 } }
+    ]},
+    { text: "O cliente quer fechar, mas exige uma taxa de débito de 0.79% (nossa mínima é 0.99%). O que você faz?", options: [
+        { text: "Digo que não posso cobrir e deixo ir.", scores: { persuasion: 2, emotional: 4, action: 2, fit: 2 } },
+        { text: "Ofereço 0.79% e depois vejo com o gerente.", scores: { persuasion: 5, emotional: 2, action: 6, fit: 0 } },
+        { text: "Foco no valor: mostro o CS e a máquina ZAP PRO que concilia PIX rápido, compensando a taxa.", scores: { persuasion: 10, emotional: 8, action: 9, fit: 10 } },
+        { text: "Digo que a concorrência vai aumentar a taxa depois.", scores: { persuasion: 6, emotional: 5, action: 5, fit: 4 } }
+    ]},
+    { text: "Você tem 20 leads que enviaram docs há 3 dias (sem assinar) e 50 leads inbound novos hoje. Como prioriza?", options: [
+        { text: "Ligo para os 50 novos para tentar fechar rápido.", scores: { persuasion: 5, emotional: 5, action: 6, fit: 4 } },
+        { text: "Foco nos 20 que mandaram docs (urgência) e depois ataco os novos.", scores: { persuasion: 9, emotional: 8, action: 10, fit: 10 } },
+        { text: "Mando e-mail em massa para todos.", scores: { persuasion: 2, emotional: 3, action: 2, fit: 1 } },
+        { text: "Divido meu tempo meio a meio.", scores: { persuasion: 4, emotional: 6, action: 5, fit: 3 } }
+    ]},
+    { text: "Um lead (dono de padaria) sofre com fraudes no PIX. Como você vende?", options: [
+        { text: "Digo que as máquinas rodam Android e são bonitas.", scores: { persuasion: 2, emotional: 4, action: 3, fit: 2 } },
+        { text: "Ofereço taxas baixas no crédito para evitar PIX.", scores: { persuasion: 5, emotional: 5, action: 5, fit: 4 } },
+        { text: "Apresento a ZAP PRO, provando que o PIX sai impresso na hora, eliminando fraudes e filas.", scores: { persuasion: 10, emotional: 8, action: 10, fit: 10 } },
+        { text: "Pergunto qual a taxa atual dele.", scores: { persuasion: 3, emotional: 2, action: 4, fit: 2 } }
+    ]},
+    { text: "Dia 25 do mês, 60% da meta batida, e você perdeu a maior venda do mês. Qual a atitude?", options: [
+        { text: "Aceito que o mês está perdido e prospecto para o mês que vem.", scores: { persuasion: 3, emotional: 5, action: 2, fit: 2 } },
+        { text: "Fico desmotivado e reclamo com o time.", scores: { persuasion: 1, emotional: 0, action: 1, fit: 0 } },
+        { text: "Analiso a perda, ajusto o pitch e dobro o volume em tickets menores para salvar a meta.", scores: { persuasion: 9, emotional: 10, action: 10, fit: 10 } },
+        { text: "Ligo implorando pro cliente reconsiderar.", scores: { persuasion: 2, emotional: 1, action: 4, fit: 1 } }
+    ]},
+    { text: "Lead de farmácia liga apressado e pergunta só: 'Qual a taxa de débito?'. Como conduz?", options: [
+        { text: "Passo a taxa de cara para ser objetivo.", scores: { persuasion: 3, emotional: 4, action: 5, fit: 2 } },
+        { text: "Faço perguntas do negócio dele para ancorar o valor da Zapizi antes do preço.", scores: { persuasion: 10, emotional: 8, action: 9, fit: 10 } },
+        { text: "Digo que a taxa é a melhor do mercado e cubro qualquer uma.", scores: { persuasion: 4, emotional: 3, action: 6, fit: 1 } },
+        { text: "Pergunto a taxa atual e já cubro na hora.", scores: { persuasion: 5, emotional: 3, action: 7, fit: 3 } }
+    ]},
+    { text: "Cliente exige um relatório que a Zapizi não tem, para poder fechar. O que você faz?", options: [
+        { text: "Prometo que temos só pra fechar.", scores: { persuasion: 6, emotional: 2, action: 8, fit: 0 } },
+        { text: "Digo que temos e torço pra ele não cobrar.", scores: { persuasion: 5, emotional: 2, action: 5, fit: 0 } },
+        { text: "Sou transparente, mostro que nossos relatórios resolvem 90% da dor dele. Venda sem churn.", scores: { persuasion: 9, emotional: 10, action: 8, fit: 10 } },
+        { text: "Desisto da venda na hora.", scores: { persuasion: 1, emotional: 4, action: 1, fit: 2 } }
+    ]},
+    { text: "Lead Inbound (Pessoa Física, fatura R$ 500/mês) quer ZAP PRO. O foco é B2B. O que faz?", options: [
+        { text: "Gasto 40 min tentando vender a máquina com isenção.", scores: { persuasion: 5, emotional: 5, action: 5, fit: 1 } },
+        { text: "Qualifico em 5 min, explico a regra e vendo Link de Pagamento.", scores: { persuasion: 9, emotional: 8, action: 10, fit: 10 } },
+        { text: "Ignoro o lead.", scores: { persuasion: 1, emotional: 2, action: 1, fit: 0 } },
+        { text: "Prometo a máquina com aluguel altíssimo.", scores: { persuasion: 6, emotional: 2, action: 6, fit: 2 } }
+    ]},
+    { text: "Prospect é arrogante, diz que 'empresas de maquininha só querem roubar'.", options: [
+        { text: "Bato boca com ele defendendo a empresa.", scores: { persuasion: 2, emotional: 1, action: 4, fit: 1 } },
+        { text: "Desligo na cara.", scores: { persuasion: 1, emotional: 3, action: 2, fit: 2 } },
+        { text: "Dou razão parcial à frustração dele e mostro como a Zapizi foca no sucesso do cliente.", scores: { persuasion: 10, emotional: 10, action: 9, fit: 10 } },
+        { text: "Fico calado, peço desculpas e desligo.", scores: { persuasion: 2, emotional: 2, action: 1, fit: 2 } }
+    ]},
+    { text: "O que define um Top Performer na Zapizi?", options: [
+        { text: "Aquele que vende o máximo de volume sem ligar pro faturamento.", scores: { persuasion: 6, emotional: 3, action: 8, fit: 2 } },
+        { text: "Aquele que foca em dar desconto máximo.", scores: { persuasion: 4, emotional: 2, action: 5, fit: 1 } },
+        { text: "Vende valor, qualifica bem, e traz clientes saudáveis (baixo churn).", scores: { persuasion: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "Aquele que preenche CRM certinho mas não bate meta.", scores: { persuasion: 2, emotional: 6, action: 3, fit: 4 } }
+    ]},
+    { text: "Durante uma call de qualificação, o prospect diz que não tem tempo para conversar. Qual a sua reação?", options: [
+        { text: "Ofereço 10% de desconto de cara para segurá-lo.", scores: { persuasion: 3, emotional: 3, action: 5, fit: 2 } },
+        { text: "Mostro empatia, mas lanço um 'hook' rápido sobre como otimizar o tempo dele com a Zapizi.", scores: { persuasion: 10, emotional: 9, action: 9, fit: 10 } },
+        { text: "Insisto repetidamente, mesmo ele pedindo para desligar.", scores: { persuasion: 2, emotional: 2, action: 8, fit: 2 } },
+        { text: "Desligo e envio um e-mail padrão.", scores: { persuasion: 4, emotional: 5, action: 4, fit: 4 } }
+    ]},
+    { text: "O cliente pede uma demonstração completa do sistema, mas você percebe que ele ainda não é o tomador de decisão. O que você faz?", options: [
+        { text: "Faço a demonstração de 1 hora de qualquer forma.", scores: { persuasion: 5, emotional: 6, action: 5, fit: 4 } },
+        { text: "Recuso a demonstração até que o chefe dele participe.", scores: { persuasion: 4, emotional: 4, action: 5, fit: 4 } },
+        { text: "Faço um overview de 10 min e condiciono a apresentação completa à presença do decisor.", scores: { persuasion: 9, emotional: 8, action: 10, fit: 10 } },
+        { text: "Passo um vídeo gravado genérico e desligo.", scores: { persuasion: 2, emotional: 3, action: 3, fit: 2 } }
+    ]},
+    { text: "Seu gerente aponta que sua taxa de conversão caiu 15% esta semana. Como você responde?", options: [
+        { text: "Culpo os leads que vieram ruins do marketing.", scores: { persuasion: 2, emotional: 2, action: 3, fit: 0 } },
+        { text: "Fico na defensiva e digo que estou fazendo meu máximo.", scores: { persuasion: 3, emotional: 2, action: 4, fit: 1 } },
+        { text: "Analiso minhas calls, peço feedback pro gerente e aplico o ajuste no próximo dia.", scores: { persuasion: 8, emotional: 10, action: 10, fit: 10 } },
+        { text: "Ignoro e continuo fazendo do meu jeito.", scores: { persuasion: 2, emotional: 2, action: 2, fit: 1 } }
+    ]},
+    { text: "Você descobre que a Stone cobriu sua oferta para um lead quente. Qual o próximo passo?", options: [
+        { text: "Ligo pro lead e mostro planilhas provando onde está a pegadinha no contrato da Stone.", scores: { persuasion: 10, emotional: 8, action: 9, fit: 10 } },
+        { text: "Peço pro gerente liberar taxa negativa pra ganhar o negócio.", scores: { persuasion: 4, emotional: 3, action: 6, fit: 2 } },
+        { text: "Desisto, não dá pra brigar com banco grande.", scores: { persuasion: 1, emotional: 2, action: 1, fit: 1 } },
+        { text: "Digo ao cliente que a Stone é um lixo.", scores: { persuasion: 3, emotional: 1, action: 5, fit: 0 } }
+    ]},
+    { text: "Faltam 2 vendas para a meta e o sistema de assinatura eletrônica cai no último dia do mês. O que faz?", options: [
+        { text: "Aviso o cliente e peço para assinar amanhã.", scores: { persuasion: 3, emotional: 5, action: 3, fit: 3 } },
+        { text: "Imprimo, vou até o cliente (se local) ou aciono contingência aprovada (e-mail formal) para garantir a venda hoje.", scores: { persuasion: 8, emotional: 9, action: 10, fit: 10 } },
+        { text: "Reclamo no grupo da empresa.", scores: { persuasion: 1, emotional: 2, action: 1, fit: 0 } },
+        { text: "Faço a venda sem assinatura.", scores: { persuasion: 4, emotional: 1, action: 6, fit: 1 } }
+    ]},
+    { text: "O prospect pergunta: 'Qual a diferença entre vocês e o Mercado Pago?'", options: [
+        { text: "Digo que somos mais baratos.", scores: { persuasion: 4, emotional: 5, action: 5, fit: 3 } },
+        { text: "Explico o nosso CS dedicado, a conciliação automática e a proximidade do time Zapizi.", scores: { persuasion: 10, emotional: 9, action: 8, fit: 10 } },
+        { text: "Não sei responder direito.", scores: { persuasion: 1, emotional: 3, action: 2, fit: 1 } },
+        { text: "Falo mal do Mercado Pago.", scores: { persuasion: 3, emotional: 2, action: 4, fit: 1 } }
+    ]},
+    { text: "Você recebe um lead fora do perfil da empresa (ICM muito baixo). O que faz?", options: [
+        { text: "Gasto 1 hora validando.", scores: { persuasion: 4, emotional: 5, action: 3, fit: 2 } },
+        { text: "Atendo bem, mas qualifico rápido fora do funil para focar em leads quentes.", scores: { persuasion: 8, emotional: 9, action: 10, fit: 10 } },
+        { text: "Trato mal porque ele não vai dar comissão.", scores: { persuasion: 1, emotional: 1, action: 1, fit: 0 } },
+        { text: "Fecho o negócio oferecendo o melhor produto só pelo volume.", scores: { persuasion: 6, emotional: 3, action: 7, fit: 2 } }
+    ]},
+    { text: "O seu colega de equipe conseguiu uma venda enorme, enquanto você está zerado no dia. Qual o sentimento?", options: [
+        { text: "Fico com inveja e reclamo que a base dele é melhor.", scores: { persuasion: 2, emotional: 1, action: 2, fit: 0 } },
+        { text: "Parabenizo, pergunto como ele contornou objeções e uso as dicas no meu pitch.", scores: { persuasion: 8, emotional: 10, action: 10, fit: 10 } },
+        { text: "Não ligo, sigo meu trabalho.", scores: { persuasion: 4, emotional: 6, action: 5, fit: 5 } },
+        { text: "Desanimo e passo o dia no celular.", scores: { persuasion: 1, emotional: 1, action: 1, fit: 1 } }
+    ]},
+    { text: "Você ligou 10 vezes e o lead pediu pra retornar. Na 11ª ele atende irritado.", options: [
+        { text: "Peço mil desculpas e desligo.", scores: { persuasion: 2, emotional: 3, action: 1, fit: 2 } },
+        { text: "Brinco com a situação ('Pelo menos agora você atendeu!'), quebro o gelo e apresento o valor rápido.", scores: { persuasion: 10, emotional: 10, action: 9, fit: 10 } },
+        { text: "Digo que só liguei porque ele pediu.", scores: { persuasion: 4, emotional: 3, action: 4, fit: 3 } },
+        { text: "Me irrito junto e pergunto se ele quer ou não comprar.", scores: { persuasion: 2, emotional: 1, action: 5, fit: 1 } }
+    ]},
+    { text: "Você descobre uma brecha na regra de preços para ganhar mais comissão prejudicando a margem da empresa. O que faz?", options: [
+        { text: "Uso a brecha sem contar a ninguém.", scores: { persuasion: 5, emotional: 2, action: 7, fit: 0 } },
+        { text: "Conto pros amigos para todos ganharem.", scores: { persuasion: 4, emotional: 3, action: 6, fit: 0 } },
+        { text: "Aviso o gerente imediatamente para corrigir, preservando a saúde da empresa.", scores: { persuasion: 8, emotional: 10, action: 8, fit: 10 } },
+        { text: "Não uso, mas também não aviso.", scores: { persuasion: 5, emotional: 6, action: 5, fit: 5 } }
+    ]},
+
+    // --- DISC PROFILE (10 questions) ---
+    { text: "Em um ambiente de trabalho novo, como você se comporta?", options: [
+        { text: "Assumo a liderança e começo a delegar tarefas rapidamente.", disc: "d" },
+        { text: "Procuro conversar, me entrosar e conhecer todo mundo.", disc: "i" },
+        { text: "Observo a dinâmica, ajudo os outros e me adapto à rotina.", disc: "s" },
+        { text: "Foco em entender as regras, processos e fazer o trabalho com precisão.", disc: "c" }
+    ]},
+    { text: "Quando enfrenta um problema complexo, você prefere:", options: [
+        { text: "Tomar uma decisão rápida e corrigir no caminho se der errado.", disc: "d" },
+        { text: "Reunir o time para debater ideias e encontrar algo criativo juntos.", disc: "i" },
+        { text: "Buscar uma solução estável e testada, sem grandes sobressaltos.", disc: "s" },
+        { text: "Analisar profundamente todos os dados e detalhes antes de agir.", disc: "c" }
+    ]},
+    { text: "Qual palavra melhor descreve seu foco principal?", options: [
+        { text: "Resultados.", disc: "d" },
+        { text: "Pessoas.", disc: "i" },
+        { text: "Estabilidade.", disc: "s" },
+        { text: "Qualidade.", disc: "c" }
+    ]},
+    { text: "Durante uma discussão acalorada, você geralmente:", options: [
+        { text: "Defende seu ponto com firmeza e vai direto ao ponto.", disc: "d" },
+        { text: "Usa o humor ou carisma para apaziguar e convencer.", disc: "i" },
+        { text: "Ouve atentamente e tenta encontrar um consenso amigável.", disc: "s" },
+        { text: "Apresenta fatos lógicos e concretos, evitando emoções.", disc: "c" }
+    ]},
+    { text: "Como você prefere que seus objetivos sejam definidos?", options: [
+        { text: "Metas agressivas e desafiadoras.", disc: "d" },
+        { text: "Metas inspiradoras e com reconhecimento público.", disc: "i" },
+        { text: "Metas claras, passo a passo e sem pressão súbita.", disc: "s" },
+        { text: "Metas precisas, lógicas e baseadas em dados concretos.", disc: "c" }
+    ]},
+    { text: "O que mais te desmotiva no trabalho?", options: [
+        { text: "Perder autonomia ou o controle das decisões.", disc: "d" },
+        { text: "Falta de interação social ou reconhecimento.", disc: "i" },
+        { text: "Mudanças constantes e imprevisíveis na rotina.", disc: "s" },
+        { text: "Desorganização, falta de regras ou trabalho mal feito.", disc: "c" }
+    ]},
+    { text: "Como você age sob extrema pressão?", options: [
+        { text: "Fico autoritário e exijo ação imediata.", disc: "d" },
+        { text: "Tento manter a energia alta e converso bastante.", disc: "i" },
+        { text: "Me retraio e busco manter a harmonia a todo custo.", disc: "s" },
+        { text: "Fico muito crítico e exijo perfeição nos detalhes.", disc: "c" }
+    ]},
+    { text: "Ao comunicar uma ideia, você costuma:", options: [
+        { text: "Ir direto ao ponto, resumindo o impacto no resultado final.", disc: "d" },
+        { text: "Falar com entusiasmo e contar histórias.", disc: "i" },
+        { text: "Explicar calmamente como isso vai ajudar todos na equipe.", disc: "s" },
+        { text: "Apresentar planilhas, gráficos e provas detalhadas.", disc: "c" }
+    ]},
+    { text: "No seu grupo de amigos, você é aquele que:", options: [
+        { text: "Decide onde ir e o que fazer.", disc: "d" },
+        { text: "Anima a festa e junta as pessoas.", disc: "i" },
+        { text: "Apoia as decisões e cuida para que todos estejam bem.", disc: "s" },
+        { text: "Organiza o dinheiro, o mapa e o roteiro.", disc: "c" }
+    ]},
+    { text: "A melhor maneira de reconhecer o seu bom trabalho é:", options: [
+        { text: "Dando-me mais poder e responsabilidade.", disc: "d" },
+        { text: "Com um prêmio ou elogio em frente à equipe.", disc: "i" },
+        { text: "Com um feedback sincero e privado valorizando minha lealdade.", disc: "s" },
+        { text: "Reconhecendo a precisão e excelência técnica do meu projeto.", disc: "c" }
+    ]}
+];
 
         let currentQuestion = 0;
         let candidateName = '';
@@ -622,7 +749,7 @@
         function renderQuestion() {
             const q = questions[currentQuestion];
             questionText.innerText = q.text;
-            questionCategory.innerText = q.category;
+            
             questionCounter.innerText = `${currentQuestion + 1}/${questions.length}`;
             
             const progress = ((currentQuestion) / questions.length) * 100;
@@ -695,7 +822,11 @@
                         persuasion: scores.pPersuasion,
                         emotional: scores.pEmotional,
                         action: scores.pAction,
-                        fit: scores.pFit
+                        fit: scores.pFit,
+                        discD: scores.pD,
+                        discI: scores.pI,
+                        discS: scores.pS,
+                        discC: scores.pC
                     })
                 });
                 
@@ -712,41 +843,51 @@
         }
 
         function calculateScores() {
-            let total = { persuasion: 0, emotional: 0, action: 0, fit: 0 };
-            let maxTotal = { persuasion: 0, emotional: 0, action: 0, fit: 0 };
+            let totalPersuasion = 0;
+            let totalEmotional = 0;
+            let totalAction = 0;
+            let totalFit = 0;
+            
+            let maxScore = 20 * 10; // 20 questions * 10 points
 
-            questions.forEach((q, i) => {
-                const selectedOpt = q.options[answers[i]];
-                
-                total.persuasion += selectedOpt.scores.persuasion;
-                total.emotional += selectedOpt.scores.emotional;
-                total.action += selectedOpt.scores.action;
-                total.fit += selectedOpt.scores.fit;
+            let discScores = { d: 0, i: 0, s: 0, c: 0 };
 
-                // Max possible for this question
-                let maxP = 0, maxE = 0, maxA = 0, maxF = 0;
-                q.options.forEach(opt => {
-                    if(opt.scores.persuasion > maxP) maxP = opt.scores.persuasion;
-                    if(opt.scores.emotional > maxE) maxE = opt.scores.emotional;
-                    if(opt.scores.action > maxA) maxA = opt.scores.action;
-                    if(opt.scores.fit > maxF) maxF = opt.scores.fit;
-                });
-
-                maxTotal.persuasion += maxP;
-                maxTotal.emotional += maxE;
-                maxTotal.action += maxA;
-                maxTotal.fit += maxF;
+            answers.forEach((ansIndex, qIndex) => {
+                if (ansIndex !== null) {
+                    const option = questions[qIndex].options[ansIndex];
+                    if (qIndex < 20) {
+                        // Soft Skills
+                        totalPersuasion += option.scores.persuasion;
+                        totalEmotional += option.scores.emotional;
+                        totalAction += option.scores.action;
+                        totalFit += option.scores.fit;
+                    } else {
+                        // DISC
+                        discScores[option.disc] += 1;
+                    }
+                }
             });
 
-            const pPersuasion = Math.round((total.persuasion / maxTotal.persuasion) * 100);
-            const pEmotional = Math.round((total.emotional / maxTotal.emotional) * 100);
-            const pAction = Math.round((total.action / maxTotal.action) * 100);
-            const pFit = Math.round((total.fit / maxTotal.fit) * 100);
+            const pPersuasion = Math.round((totalPersuasion / maxScore) * 100);
+            const pEmotional = Math.round((totalEmotional / maxScore) * 100);
+            const pAction = Math.round((totalAction / maxScore) * 100);
+            const pFit = Math.round((totalFit / maxScore) * 100);
 
-            // Global score (weighted: Fit 30%, Persuasion 30%, Emotional 20%, Action 20%)
-            const finalScore = Math.round((pFit * 0.3) + (pPersuasion * 0.3) + (pEmotional * 0.2) + (pAction * 0.2));
+            // Fit Score (30% Fit, 30% Persuasion, 20% Emotional, 20% Action)
+            const finalScore = Math.round(
+                (pFit * 0.3) + 
+                (pPersuasion * 0.3) + 
+                (pEmotional * 0.2) + 
+                (pAction * 0.2)
+            );
 
-            return { finalScore, pPersuasion, pEmotional, pAction, pFit };
+            // DISC percentages (out of 10 questions)
+            const pD = Math.round((discScores.d / 10) * 100);
+            const pI = Math.round((discScores.i / 10) * 100);
+            const pS = Math.round((discScores.s / 10) * 100);
+            const pC = Math.round((discScores.c / 10) * 100);
+
+            return { finalScore, pPersuasion, pEmotional, pAction, pFit, pD, pI, pS, pC };
         }
         
         function showResultsScreen(scores) {
@@ -769,6 +910,16 @@
                 document.getElementById('bar-fit').style.width = `${scores.pFit}%`;
                 document.getElementById('score-fit').innerText = `${scores.pFit}%`;
                 
+                // DISC bars
+                document.getElementById('bar-d').style.width = `${scores.pD}%`;
+                document.getElementById('score-d').innerText = `${scores.pD}%`;
+                document.getElementById('bar-i').style.width = `${scores.pI}%`;
+                document.getElementById('score-i').innerText = `${scores.pI}%`;
+                document.getElementById('bar-s').style.width = `${scores.pS}%`;
+                document.getElementById('score-s').innerText = `${scores.pS}%`;
+                document.getElementById('bar-c').style.width = `${scores.pC}%`;
+                document.getElementById('score-c').innerText = `${scores.pC}%`;
+
                 // Color the main circle based on score
                 const circle = document.querySelector('.score-circle');
                 if(scores.finalScore >= 80) { circle.style.borderColor = '#10B981'; circle.style.boxShadow = '0 0 30px rgba(16, 185, 129, 0.3)'; }
