@@ -11,8 +11,8 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Configuração da API do Resend
-// Usando a chave fornecida com fallback para variável de ambiente
-const resend = new Resend(process.env.RESEND_API_KEY || 're_P1x5iQ9c_GuyhvknEwNhbwAfXTZDJ6hyJ');
+// Usando a chave da variável de ambiente 'APIKEY' configurada no container
+const resend = new Resend(process.env.APIKEY);
 
 // API Route to submit test
 app.post('/api/submit', async (req, res) => {
