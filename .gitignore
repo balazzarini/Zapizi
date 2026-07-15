@@ -4,15 +4,23 @@
 # Exceção para o próprio arquivo .gitignore
 !.gitignore
 
-# Permitir a pasta 07_Scripts_e_Ferramentas e seu subdiretório do WhatsApp Monitor
-!/07_Scripts_e_Ferramentas/
-/07_Scripts_e_Ferramentas/*
-!/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/
+# Permitir a pasta 08_Scripts_e_Ferramentas e seus subdiretórios
+!/08_Scripts_e_Ferramentas/
+/08_Scripts_e_Ferramentas/*
+!/08_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/
+!/08_Scripts_e_Ferramentas/Teste_Inside_Sales/
+!/08_Scripts_e_Ferramentas/Teste_Customer_Success/
+!/08_Scripts_e_Ferramentas/Teste_Suporte/
 
 # Ignorar arquivos temporários, caches e locais do WhatsApp Monitor
-/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/node_modules/
-/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/.wwebjs_auth/
-/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/.wwebjs_cache/
-/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/.env
-/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/alerts.json
-/07_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/*.log
+/08_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/node_modules/
+/08_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/.wwebjs_auth/
+/08_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/.wwebjs_cache/
+/08_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/.env
+/08_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/alerts.json
+/08_Scripts_e_Ferramentas/zapizi-whatsapp-monitor/*.log
+
+# Ignorar node_modules dos Testes
+/08_Scripts_e_Ferramentas/Teste_Inside_Sales/node_modules/
+/08_Scripts_e_Ferramentas/Teste_Customer_Success/node_modules/
+/08_Scripts_e_Ferramentas/Teste_Suporte/node_modules/

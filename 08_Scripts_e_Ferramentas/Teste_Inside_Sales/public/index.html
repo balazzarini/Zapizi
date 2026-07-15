@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zapizi | Inside Sales Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #215FEA;
+            --primary-hover: #1946B0;
+            --bg-dark: #0F172A;
+            --bg-card: #1E293B;
+            --text-light: #F8FAFC;
+            --text-muted: #94A3B8;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at top right, rgba(33, 95, 234, 0.15), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.05), transparent 40%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo img {
+            height: 40px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            background-color: rgba(33, 95, 234, 0.2);
+            color: #60A5FA;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: rgba(33, 95, 234, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(33, 95, 234, 0.15);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        .radio-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--text-muted);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .option.selected .radio-btn {
+            border-color: var(--primary);
+        }
+
+        .option.selected .radio-btn::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-light);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-muted);
+        }
+
+        /* Results Screen */
+        .results-container {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem auto;
+            box-shadow: 0 0 30px rgba(33, 95, 234, 0.3);
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .radar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .metric-bar-bg {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.5);
+            color: white;
+            font-family: 'Sora', sans-serif;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Loading Overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="spinner"></div>
+        <p>Calculando seus resultados e enviando candidatura...</p>
+    </div>
+
+    <div class="container">
+        <div class="card" id="intro-screen">
+            <div class="logo">
+                <img src="logo.svg" alt="Zapizi Logo">
+            </div>
+            <h1>Avaliação de Perfil - Inside Sales</h1>
+            <p class="subtitle">Descubra sua aderência à cultura comercial, negociação e agressividade em vendas B2B da Zapizi.</p>
+            
+            <div class="form-group">
+                <label for="candidate-name">Nome Completo</label>
+                <input type="text" id="candidate-name" placeholder="Digite seu nome completo">
+            </div>
+            <div class="form-group">
+                <label for="candidate-email">E-mail</label>
+                <input type="email" id="candidate-email" placeholder="Digite seu e-mail">
+            </div>
+            <div class="form-group">
+                <label for="candidate-phone">Telefone (WhatsApp)</label>
+                <input type="tel" id="candidate-phone" placeholder="(XX) 9XXXX-XXXX">
+            </div>
+            <div class="form-group">
+                <label for="candidate-linkedin">URL do LinkedIn</label>
+                <input type="url" id="candidate-linkedin" placeholder="https://linkedin.com/in/seu-perfil">
+            </div>
+            <div class="form-group">
+                <label for="candidate-salary">Pretensão Salarial (CLT ou PJ)</label>
+                <input type="text" id="candidate-salary" placeholder="Ex: R$ 3.000,00 + Comissão">
+            </div>
+
+            <button class="btn" id="start-btn">Iniciar Avaliação (30 perguntas)</button>
+        </div>
+
+        <div class="card hidden" id="quiz-screen">
+            <div class="logo" style="margin-bottom: 1rem;">
+                <img src="logo.svg" alt="Zapizi Logo" style="height: 24px;">
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            
+            <div class="question-header">
+                
+                <span style="color: var(--text-muted); font-size: 0.9rem;" id="question-counter">1/10</span>
+            </div>
+
+            <h2 class="question-text" id="question-text">Question goes here...</h2>
+
+            <div class="options" id="options-container">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-outline" id="prev-btn" style="display: none;">Voltar</button>
+                <button class="btn" id="next-btn" disabled>Próxima</button>
+            </div>
+        </div>
+
+        <div class="card hidden" id="results-screen">
+            <div class="logo">
+                <img src="logo.svg" alt="Zapizi Logo">
+            </div>
+            <div class="results-container">
+                <h1>Avaliação Concluída!</h1>
+                <p class="subtitle">Obrigado, <span id="res-name">Candidato</span>. Seus resultados foram registrados.</p>
+
+                <div class="score-circle">
+                    <div class="score-number" id="final-score">0</div>
+                    <div class="score-label">Fit Score</div>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">
+                    Tire um print desta tela ou salve seus resultados, se solicitado.
+                </p>
+
+                <div class="radar-chart">
+                    <h3 style="margin-top: 1rem; color: #fff;">Comportamental & Metas</h3>
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🎯 Persuasão & Negociação</span>
+                            <span id="score-persuasion">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-persuasion" style="background-color: #3B82F6;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🤝 Resiliência & Inteligência Emocional</span>
+                            <span id="score-emotional">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-emotional" style="background-color: #10B981;"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>⚡ Pró-atividade & Foco em Metas</span>
+                            <span id="score-action">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-action" style="background-color: #F59E0B;"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>💙 Fit Cultural (Zapizi Way)</span>
+                            <span id="score-fit">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-fit" style="background-color: #8B5CF6;"></div>
+                        </div>
+                    </div>
+
+                    <hr style="border-color: var(--border); margin: 2rem 0;">
+                    
+                    <h3 style="margin-top: 0; color: #fff;">Perfil DISC</h3>
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🔥 Dominância (D)</span>
+                            <span id="score-d">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-d" style="background-color: #EF4444;"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🗣️ Influência (I)</span>
+                            <span id="score-i">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-i" style="background-color: #F59E0B;"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🤝 Estabilidade (S)</span>
+                            <span id="score-s">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-s" style="background-color: #10B981;"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>📊 Conformidade (C)</span>
+                            <span id="score-c">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-c" style="background-color: #3B82F6;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+    // --- PARTE 1: MÚLTIPLA ESCOLHA & RACIOCÍNIO ---
+    { text: "Raciocínio de Funil: Se a sua meta de vendas é fechar 40 novos contratos por mês, e a sua taxa de conversão final (Lead Bruto para Fechamento) é de 5%, quantos leads brutos você precisa colocar no seu funil mensalmente?", options: [
+        { text: "200 leads.", scores: { persuasion: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "400 leads.", scores: { persuasion: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "800 leads.", scores: { persuasion: 10, emotional: 10, action: 10, fit: 10 } },
+        { text: "1200 leads.", scores: { persuasion: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Ética e Contorno: Uma nova atualização da plataforma apresentou falha crítica em 30% da base. Qual é sua ação com um lead que está com contrato na mão prestes a assinar com você hoje?", options: [
+        { text: "Omito a informação para garantir a venda hoje e deixo para o Suporte lidar amanhã.", scores: { persuasion: 5, emotional: 2, action: 7, fit: 0 } },
+        { text: "Pauso a negociação imediatamente e peço para ele voltar na semana que vem, quando tudo estiver resolvido.", scores: { persuasion: 2, emotional: 5, action: 2, fit: 3 } },
+        { text: "Aviso sobre a instabilidade com transparência, reforço a atuação da engenharia e a solidez da ferramenta para avançar a assinatura.", scores: { persuasion: 10, emotional: 10, action: 9, fit: 10 } },
+        { text: "Concedo um desconto agressivo no custo de adesão para cobrir o 'inconveniente' e fecho a venda.", scores: { persuasion: 4, emotional: 3, action: 6, fit: 2 } }
+    ]},
+    { text: "Visão de Negócio (Take Rate): Nossa receita vem exclusivamente de um percentual (Take Rate) sobre o volume transacionado. Qual cenário de fechamento abaixo é mais lucrativo e estratégico?", options: [
+        { text: "Fechar contrato com 1 cliente que comprará apenas 1 equipamento, transacionando R$ 15.000/mês.", scores: { persuasion: 10, emotional: 8, action: 9, fit: 10 } },
+        { text: "Fechar contrato com 1 cliente que comprará 10 equipamentos, transacionando R$ 500/mês cada (total R$ 5.000/mês).", scores: { persuasion: 3, emotional: 3, action: 4, fit: 2 } },
+        { text: "Vender o máximo de equipamentos possíveis, cobrando pela adesão, independente do volume transacionado.", scores: { persuasion: 2, emotional: 2, action: 5, fit: 0 } },
+        { text: "Não fechar nenhum dos dois e buscar um cliente de R$ 100.000/mês.", scores: { persuasion: 1, emotional: 5, action: 2, fit: 3 } }
+    ]},
+    { text: "Gestão de CRM: Faltam 2 dias úteis para fechar o mês e você está 30% abaixo da sua meta. Como você prioriza a sua próxima hora de trabalho?", options: [
+        { text: "Fazer 50 ligações para leads completamente frios (Outbound).", scores: { persuasion: 4, emotional: 6, action: 8, fit: 3 } },
+        { text: "Ligar para 8 leads quentes que já receberam sua proposta há 10 dias, mas pararam de responder.", scores: { persuasion: 9, emotional: 10, action: 10, fit: 10 } },
+        { text: "Atualizar todos os dados, nomes e tarefas em atraso no CRM para não tomar bronca da gestão.", scores: { persuasion: 1, emotional: 3, action: 2, fit: 2 } },
+        { text: "Reunir-se com a equipe de Marketing para exigir mais leads qualificados urgentemente.", scores: { persuasion: 2, emotional: 2, action: 4, fit: 1 } }
+    ]},
+    { text: "Diagnóstico de Funil: Você não bateu a meta, mesmo recebendo muitos leads. Qual indicador melhor diagnostica de forma isolada ONDE no processo a sua venda está travando?", options: [
+        { text: "A taxa de conversão de cada etapa intermediária (Lead -> Conexão -> Apresentação).", scores: { persuasion: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "A taxa de cancelamento (Churn) dos clientes no 6º mês.", scores: { persuasion: 2, emotional: 3, action: 2, fit: 2 } },
+        { text: "A quantidade total de MQLs (Marketing Qualified Leads) gerados no trimestre.", scores: { persuasion: 3, emotional: 2, action: 4, fit: 3 } },
+        { text: "O número total de ligações feitas na semana.", scores: { persuasion: 4, emotional: 4, action: 5, fit: 4 } }
+    ]},
+    { text: "SLA de Inbound: Um lead preencheu os dados de contato no site. Qual é a janela de tempo ideal em que você DEVE fazer a primeira tentativa de ligação?", options: [
+        { text: "Em até 5 minutos.", scores: { persuasion: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "Em até 4 horas.", scores: { persuasion: 4, emotional: 4, action: 5, fit: 3 } },
+        { text: "Em até 24 horas.", scores: { persuasion: 2, emotional: 3, action: 2, fit: 2 } },
+        { text: "Em até 48 horas.", scores: { persuasion: 0, emotional: 1, action: 1, fit: 0 } }
+    ]},
+    
+    // --- PARTE 2: DISCURSIVAS ADAPTADAS (CENÁRIOS STAR) ---
+    { text: "Em ambientes ágeis sem processos maduros, como você cria um método de vendas para bater a meta?", options: [
+        { text: "Reclamo com a gestão até que me passem um script e um playbook pronto.", scores: { persuasion: 1, emotional: 1, action: 1, fit: 0 } },
+        { text: "Espero alguém da equipe descobrir o que funciona e copio a estratégia.", scores: { persuasion: 3, emotional: 4, action: 2, fit: 2 } },
+        { text: "Estruturo um MVP do processo: testo abordagens no telefone, anoto as objeções comuns, crio um script base iterativo e rodo rápido.", scores: { persuasion: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "Tento vender sem nenhum processo ou anotação, confiando apenas no talento no improviso.", scores: { persuasion: 6, emotional: 5, action: 7, fit: 4 } }
+    ]},
+    { text: "Você tinha certeza absoluta que ia fechar uma venda enorme, mas o cliente desistiu na reta final. O que você faz a seguir?", options: [
+        { text: "Fico frustrado, fecho o CRM e tiro o resto do dia para esfriar a cabeça.", scores: { persuasion: 2, emotional: 2, action: 2, fit: 1 } },
+        { text: "Analiso cada interação, entendo a objeção oculta que deixei passar, ajusto minha etapa de qualificação para não errar no próximo lead e sigo ligando.", scores: { persuasion: 9, emotional: 10, action: 10, fit: 10 } },
+        { text: "Ligo imediatamente para o cliente implorando por uma segunda chance.", scores: { persuasion: 4, emotional: 3, action: 6, fit: 3 } },
+        { text: "Coloco a culpa no produto da Zapizi que era inferior ao concorrente.", scores: { persuasion: 1, emotional: 1, action: 2, fit: 0 } }
+    ]},
+    { text: "Você está prospectando um dono de PME muito analógico que desconfia de 'soluções em nuvem'. Como você conduz a venda?", options: [
+        { text: "Uso termos técnicos avançados (API, Cloud, Dashboard) para ele ver que somos modernos.", scores: { persuasion: 3, emotional: 4, action: 5, fit: 2 } },
+        { text: "Traduzo a tecnologia para a dor dele: mostro como ele vai parar de perder dinheiro e tempo com papel, provando o ROI sem jargões complexos.", scores: { persuasion: 10, emotional: 10, action: 9, fit: 10 } },
+        { text: "Digo que se ele não modernizar, a empresa dele vai falir em um ano.", scores: { persuasion: 4, emotional: 3, action: 7, fit: 1 } },
+        { text: "Desqualifico o lead porque clientes analógicos dão muito trabalho de Suporte.", scores: { persuasion: 2, emotional: 4, action: 3, fit: 2 } }
+    ]},
+    { text: "O Inbound secou e você precisa prospectar ativamente (Outbound). Qual a melhor estratégia?", options: [
+        { text: "Compro uma lista genérica na internet e mando 1.000 e-mails padrão por dia.", scores: { persuasion: 3, emotional: 4, action: 6, fit: 2 } },
+        { text: "Fico no LinkedIn o dia todo adicionando conexões e esperando alguém aceitar.", scores: { persuasion: 4, emotional: 5, action: 5, fit: 3 } },
+        { text: "Mapeio nichos com alta taxa de transação física (ex: redes de padarias), pesquiso os decisores, e faço ligações frias com scripts hiper-personalizados focando na dor.", scores: { persuasion: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "Aviso ao gestor que não é minha função gerar leads e cruzo os braços.", scores: { persuasion: 1, emotional: 1, action: 1, fit: 0 } }
+    ]},
+    { text: "Um lead quer muito comprar a máquina, mas durante a call você percebe que ele fatura apenas R$ 300 por mês no cartão. O que você faz?", options: [
+        { text: "Vendo do mesmo jeito, meta é meta e eu preciso da ativação.", scores: { persuasion: 6, emotional: 4, action: 8, fit: 1 } },
+        { text: "Fico com pena e dou um desconto gigante na adesão para ele poder comprar.", scores: { persuasion: 3, emotional: 2, action: 5, fit: 0 } },
+        { text: "Desqualifico o lead precocemente de forma educada, explico que o modelo da máquina não tem ROI para ele agora e ofereço um Link de Pagamento.", scores: { persuasion: 9, emotional: 10, action: 9, fit: 10 } },
+        { text: "Simplesmente desligo o telefone na cara dele ao ouvir o faturamento.", scores: { persuasion: 1, emotional: 1, action: 2, fit: 0 } }
+    ]},
+    { text: "Em um ciclo longo de vendas, como você realiza os follow-ups sem parecer um 'vendedor chato'?", options: [
+        { text: "Mando mensagem a cada 3 dias perguntando 'E aí, conseguiu ver minha proposta?'.", scores: { persuasion: 3, emotional: 4, action: 7, fit: 2 } },
+        { text: "Não faço follow-up, se o cliente quiser comprar, ele me procura.", scores: { persuasion: 1, emotional: 5, action: 2, fit: 1 } },
+        { text: "Agrego valor em cada contato: envio um artigo do setor dele, um estudo de caso, ou uma dica, mantendo a marca Zapizi quente de forma consultiva.", scores: { persuasion: 10, emotional: 10, action: 9, fit: 10 } },
+        { text: "Ligo de diferentes números de telefone para ele não saber que sou eu e ser forçado a atender.", scores: { persuasion: 2, emotional: 1, action: 8, fit: 1 } }
+    ]},
+    { text: "Você toma uma 'porta na cara' bem agressiva de um cliente numa ligação fria. O que faz em seguida?", options: [
+        { text: "Respiro, não levo para o lado pessoal (inteligência emocional), analiso se falei algo errado na abertura e disco o próximo número em 30 segundos.", scores: { persuasion: 9, emotional: 10, action: 10, fit: 10 } },
+        { text: "Xingo o cliente mentalmente e passo os próximos 15 minutos reclamando no grupo da empresa.", scores: { persuasion: 2, emotional: 1, action: 3, fit: 0 } },
+        { text: "Desisto de fazer outbound pelo resto do dia para não estragar meu humor.", scores: { persuasion: 2, emotional: 2, action: 2, fit: 2 } },
+        { text: "Mando uma mensagem no WhatsApp dele questionando a falta de educação.", scores: { persuasion: 3, emotional: 1, action: 5, fit: 1 } }
+    ]},
+    { text: "O cliente assinou, pagou a adesão, mas você ganha por volume transacionado (Take Rate). O que você faz?", options: [
+        { text: "O trabalho de vendas acabou na assinatura. Passo pro time de CS e não olho mais.", scores: { persuasion: 3, emotional: 4, action: 3, fit: 2 } },
+        { text: "Acompanho o envio, garanto que o CS configurou e acompanho a primeira semana de transações para garantir o 'Go-Live' do cliente.", scores: { persuasion: 9, emotional: 9, action: 10, fit: 10 } },
+        { text: "Ligo pedindo indicação de outros clientes antes mesmo de ele ligar a máquina.", scores: { persuasion: 6, emotional: 4, action: 7, fit: 3 } },
+        { text: "Espero passar um mês e ligo se não tiver transação.", scores: { persuasion: 4, emotional: 5, action: 5, fit: 4 } }
+    ]},
+    { text: "O cliente diz que precisa pensar e enrola. Como você usa o 'Custo de Oportunidade'?", options: [
+        { text: "Digo: 'Se você não fechar, vai perder o desconto na adesão que acaba hoje!'", scores: { persuasion: 6, emotional: 4, action: 7, fit: 4 } },
+        { text: "Digo: 'Cada dia sem a nossa solução você perde cerca de R$ X por causa das taxas atuais e falta de conciliação. Em 30 dias de espera, você jogou R$ Y fora.'", scores: { persuasion: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "Digo: 'Eu entendo, pense com calma e me retorne quando decidir.'", scores: { persuasion: 2, emotional: 5, action: 2, fit: 2 } },
+        { text: "Digo: 'Nenhum outro concorrente tem esse sistema, você tá perdendo a chance.'", scores: { persuasion: 4, emotional: 3, action: 6, fit: 3 } }
+    ]},
+    { text: "Você quer prometer uma funcionalidade que a Zapizi não tem para garantir a venda. O que faz?", options: [
+        { text: "Prometo e depois peço desculpas pro cliente, colocando a culpa na Engenharia.", scores: { persuasion: 5, emotional: 2, action: 6, fit: 0 } },
+        { text: "Não prometo. Valido se a solução atual resolve a dor e faço o alinhamento correto, preservando a relação interna e evitando Churn futuro.", scores: { persuasion: 9, emotional: 10, action: 9, fit: 10 } },
+        { text: "Prometo e brigo com o time de Produto para eles criarem a funcionalidade às pressas.", scores: { persuasion: 7, emotional: 1, action: 8, fit: 1 } },
+        { text: "Perco a venda sem tentar contornar ou mostrar o valor das features atuais.", scores: { persuasion: 1, emotional: 5, action: 2, fit: 2 } }
+    ]},
+
+    // --- PARTE 3: SIMULAÇÕES PRÁTICAS ---
+    { text: "Abertura Fria (Cold Call): O decisor atende seco 'Alô, com quem eu falo?'. Qual o seu script de 20 segundos?", options: [
+        { text: "'Oi, aqui é o Bruno da Zapizi, uma empresa de tecnologia. Você teria 5 minutos para ouvir minha proposta?' (Permissão clássica)", scores: { persuasion: 3, emotional: 5, action: 5, fit: 4 } },
+        { text: "'Oi! Eu sei que te peguei de surpresa. O motivo da ligação é que ajudamos padarias na sua região a reduzir as fraudes no PIX em 90%. Se não for o seu caso, eu desligo. Podemos falar por 1 minuto?' (Quebra de padrão + Dor)", scores: { persuasion: 10, emotional: 10, action: 10, fit: 10 } },
+        { text: "'Tudo bem? Nosso sistema é o melhor do mercado em automação de terminais e eu queria marcar uma reunião de apresentação.'", scores: { persuasion: 4, emotional: 4, action: 6, fit: 3 } },
+        { text: "Fico nervoso, falo super rápido e leio o script inteiro sem pausas até ele desligar.", scores: { persuasion: 1, emotional: 2, action: 3, fit: 1 } }
+    ]},
+    { text: "Objeção Financeira: O lead manda no WhatsApp: 'O concorrente me dá a máquina de graça e taxa menor. Vocês cobram setup e a taxa é maior. Por quê pagar mais caro?'", options: [
+        { text: "'Você tem razão, me mande a proposta deles que eu cobrirei a taxa e te isento do equipamento agora mesmo.'", scores: { persuasion: 5, emotional: 3, action: 7, fit: 2 } },
+        { text: "'A máquina de graça deles trava sexta à noite. Nossa taxa remunera estabilidade de 99.9% e suporte que atende em 1 min. Quanto você perde de vendas quando sua máquina atual fica fora do ar? É mais que essa diferença de taxa?' (Foca em Disponibilidade).", scores: { persuasion: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "'A escolha é sua, mas a nossa tecnologia é superior e os clientes preferem.'", scores: { persuasion: 4, emotional: 5, action: 4, fit: 4 } },
+        { text: "Ignoro a mensagem e ligo pra ele tentando mudar de assunto.", scores: { persuasion: 2, emotional: 2, action: 5, fit: 1 } }
+    ]},
+    { text: "Ancoragem e Urgência: O lead viu valor, mas diz: 'Vou falar com o sócio e lá pro dia 15 do mês que vem a gente fecha, ok?'", options: [
+        { text: "'Sem problemas, anotei aqui. Dia 15 te chamo!'", scores: { persuasion: 2, emotional: 5, action: 2, fit: 2 } },
+        { text: "'Maravilha! Mas a isenção parcial de setup que consegui para a sua volumetria só vale se assinarmos até sexta. Vamos fazer assim: mandamos o contrato agora, e se o sócio vetar até sexta, cancelamos sem custo. Pode ser?'", scores: { persuasion: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "'Poxa, mas se você não fechar agora eu não bato a minha meta desse mês.'", scores: { persuasion: 1, emotional: 2, action: 4, fit: 0 } },
+        { text: "'Tem certeza? O sócio precisa mesmo participar da decisão? Você não tem autonomia?'", scores: { persuasion: 4, emotional: 3, action: 6, fit: 3 } }
+    ]},
+    { text: "O Push de Ativação: Cliente assinou, máquina chegou, mas ele diz: 'Tô sem tempo pra instalar a máquina, mês que vem eu olho'. Seu Take Rate depende da instalação.", options: [
+        { text: "'Tudo bem, a máquina é sua, instale quando preferir.'", scores: { persuasion: 2, emotional: 5, action: 2, fit: 2 } },
+        { text: "'João, máquina guardada é dinheiro na mesa! Você está perdendo R$ X/dia em conciliação. Me dê 5 minutos numa vídeo-chamada agora, eu ligo com você e já deixamos faturando hoje.'", scores: { persuasion: 10, emotional: 10, action: 10, fit: 10 } },
+        { text: "'João, preciso que você instale porque senão eu não recebo minha comissão da venda!'", scores: { persuasion: 1, emotional: 1, action: 3, fit: 0 } },
+        { text: "'Se não instalar a gente vai cobrar uma multa no contrato por inatividade.'", scores: { persuasion: 3, emotional: 2, action: 5, fit: 1 } }
+    ]},
+
+    // --- DISC PROFILE (10 questions - Mantidas iguais) ---
+    { text: "Em um ambiente de trabalho novo, como você se comporta?", options: [
+        { text: "Assumo a liderança e começo a delegar tarefas rapidamente.", disc: "d" },
+        { text: "Procuro conversar, me entrosar e conhecer todo mundo.", disc: "i" },
+        { text: "Observo a dinâmica, ajudo os outros e me adapto à rotina.", disc: "s" },
+        { text: "Foco em entender as regras, processos e fazer o trabalho com precisão.", disc: "c" }
+    ]},
+    { text: "Quando enfrenta um problema complexo, você prefere:", options: [
+        { text: "Tomar uma decisão rápida e corrigir no caminho se der errado.", disc: "d" },
+        { text: "Reunir o time para debater ideias e encontrar algo criativo juntos.", disc: "i" },
+        { text: "Buscar uma solução estável e testada, sem grandes sobressaltos.", disc: "s" },
+        { text: "Analisar profundamente todos os dados e detalhes antes de agir.", disc: "c" }
+    ]},
+    { text: "Qual palavra melhor descreve seu foco principal?", options: [
+        { text: "Resultados.", disc: "d" },
+        { text: "Pessoas.", disc: "i" },
+        { text: "Estabilidade.", disc: "s" },
+        { text: "Qualidade.", disc: "c" }
+    ]},
+    { text: "Durante uma discussão acalorada, você geralmente:", options: [
+        { text: "Defende seu ponto com firmeza e vai direto ao ponto.", disc: "d" },
+        { text: "Usa o humor ou carisma para apaziguar e convencer.", disc: "i" },
+        { text: "Ouve atentamente e tenta encontrar um consenso amigável.", disc: "s" },
+        { text: "Apresenta fatos lógicos e concretos, evitando emoções.", disc: "c" }
+    ]},
+    { text: "Como você prefere que seus objetivos sejam definidos?", options: [
+        { text: "Metas agressivas e desafiadoras.", disc: "d" },
+        { text: "Metas inspiradoras e com reconhecimento público.", disc: "i" },
+        { text: "Metas claras, passo a passo e sem pressão súbita.", disc: "s" },
+        { text: "Metas precisas, lógicas e baseadas em dados concretos.", disc: "c" }
+    ]},
+    { text: "O que mais te desmotiva no trabalho?", options: [
+        { text: "Perder autonomia ou o controle das decisões.", disc: "d" },
+        { text: "Falta de interação social ou reconhecimento.", disc: "i" },
+        { text: "Mudanças constantes e imprevisíveis na rotina.", disc: "s" },
+        { text: "Desorganização, falta de regras ou trabalho mal feito.", disc: "c" }
+    ]},
+    { text: "Como você age sob extrema pressão?", options: [
+        { text: "Fico autoritário e exijo ação imediata.", disc: "d" },
+        { text: "Tento manter a energia alta e converso bastante.", disc: "i" },
+        { text: "Me retraio e busco manter a harmonia a todo custo.", disc: "s" },
+        { text: "Fico muito crítico e exijo perfeição nos detalhes.", disc: "c" }
+    ]},
+    { text: "Ao comunicar uma ideia, você costuma:", options: [
+        { text: "Ir direto ao ponto, resumindo o impacto no resultado final.", disc: "d" },
+        { text: "Falar com entusiasmo e contar histórias.", disc: "i" },
+        { text: "Explicar calmamente como isso vai ajudar todos na equipe.", disc: "s" },
+        { text: "Apresentar planilhas, gráficos e provas detalhadas.", disc: "c" }
+    ]},
+    { text: "No seu grupo de amigos, você é aquele que:", options: [
+        { text: "Decide onde ir e o que fazer.", disc: "d" },
+        { text: "Anima a festa e junta as pessoas.", disc: "i" },
+        { text: "Apoia as decisões e cuida para que todos estejam bem.", disc: "s" },
+        { text: "Organiza o dinheiro, o mapa e o roteiro.", disc: "c" }
+    ]},
+    { text: "A melhor maneira de reconhecer o seu bom trabalho é:", options: [
+        { text: "Dando-me mais poder e responsabilidade.", disc: "d" },
+        { text: "Com um prêmio ou elogio em frente à equipe.", disc: "i" },
+        { text: "Com um feedback sincero e privado valorizando minha lealdade.", disc: "s" },
+        { text: "Reconhecendo a precisão e excelência técnica do meu projeto.", disc: "c" }
+    ]}
+];
+
+        let currentQuestion = 0;
+        let candidateName = '';
+        let candidateEmail = '';
+        let candidatePhone = '';
+        let candidateLinkedin = '';
+        let answers = [];
+
+        // Elements
+        const introScreen = document.getElementById('intro-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        
+        const startBtn = document.getElementById('start-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        
+        const questionText = document.getElementById('question-text');
+        const questionCategory = document.getElementById('question-category');
+        const questionCounter = document.getElementById('question-counter');
+        const optionsContainer = document.getElementById('options-container');
+        const progressFill = document.getElementById('progress-fill');
+
+        // State initialization
+        startBtn.addEventListener('click', () => {
+            const name = document.getElementById('candidate-name').value.trim();
+            const email = document.getElementById('candidate-email').value.trim();
+            const phone = document.getElementById('candidate-phone').value.trim();
+            const linkedin = document.getElementById('candidate-linkedin').value.trim();
+            const salary = document.getElementById('candidate-salary').value.trim();
+            
+            if(!name || !email || !phone || !linkedin || !salary) {
+                alert("Por favor, preencha todos os campos obrigatórios (incluindo LinkedIn e Pretensão Salarial).");
+                return;
+            }
+            
+            if(phone.length < 10) {
+                alert("Por favor, informe um telefone válido com DDD.");
+                return;
+            }
+
+            candidateName = name;
+            candidateEmail = email;
+            candidatePhone = phone;
+            candidateLinkedin = linkedin;
+            candidateSalary = salary;
+            answers = new Array(questions.length).fill(null);
+            
+            introScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            renderQuestion();
+        });
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            questionText.innerText = q.text;
+            
+            questionCounter.innerText = `${currentQuestion + 1}/${questions.length}`;
+            
+            const progress = ((currentQuestion) / questions.length) * 100;
+            progressFill.style.width = `${progress}%`;
+
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = 'option';
+                if(answers[currentQuestion] === index) {
+                    optDiv.classList.add('selected');
+                }
+                
+                optDiv.innerHTML = `
+                    <div class="radio-btn"></div>
+                    <div>${opt.text}</div>
+                `;
+                
+                optDiv.addEventListener('click', () => {
+                    document.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
+                    optDiv.classList.add('selected');
+                    answers[currentQuestion] = index;
+                    nextBtn.disabled = false;
+                });
+                
+                optionsContainer.appendChild(optDiv);
+            });
+
+            prevBtn.style.display = currentQuestion > 0 ? 'block' : 'none';
+            nextBtn.innerText = currentQuestion === questions.length - 1 ? 'Finalizar' : 'Próxima';
+            nextBtn.disabled = answers[currentQuestion] === null;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        });
+
+        async function finishQuiz() {
+            quizScreen.classList.add('hidden');
+            
+            const scores = calculateScores();
+            
+            // Show loading
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            
+            try {
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: candidateName,
+                        email: candidateEmail,
+                        phone: candidatePhone,
+                        linkedin: candidateLinkedin,
+                        salary: candidateSalary,
+                        finalScore: scores.finalScore,
+                        persuasion: scores.pPersuasion,
+                        emotional: scores.pEmotional,
+                        action: scores.pAction,
+                        fit: scores.pFit,
+                        discD: scores.pD,
+                        discI: scores.pI,
+                        discS: scores.pS,
+                        discC: scores.pC
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Falha ao salvar');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Os resultados foram calculados, mas houve um erro ao enviar a sua candidatura. Tire um print da próxima tela.');
+            } finally {
+                document.getElementById('loading-overlay').classList.add('hidden');
+                showResultsScreen(scores);
+            }
+        }
+
+        function calculateScores() {
+            let totalPersuasion = 0;
+            let totalEmotional = 0;
+            let totalAction = 0;
+            let totalFit = 0;
+            
+            let maxScore = 20 * 10; // 20 questions * 10 points
+
+            let discScores = { d: 0, i: 0, s: 0, c: 0 };
+
+            answers.forEach((ansIndex, qIndex) => {
+                if (ansIndex !== null) {
+                    const option = questions[qIndex].options[ansIndex];
+                    if (qIndex < 20) {
+                        // Soft Skills
+                        totalPersuasion += option.scores.persuasion;
+                        totalEmotional += option.scores.emotional;
+                        totalAction += option.scores.action;
+                        totalFit += option.scores.fit;
+                    } else {
+                        // DISC
+                        discScores[option.disc] += 1;
+                    }
+                }
+            });
+
+            const pPersuasion = Math.round((totalPersuasion / maxScore) * 100);
+            const pEmotional = Math.round((totalEmotional / maxScore) * 100);
+            const pAction = Math.round((totalAction / maxScore) * 100);
+            const pFit = Math.round((totalFit / maxScore) * 100);
+
+            // Fit Score (30% Fit, 30% Persuasion, 20% Emotional, 20% Action)
+            const finalScore = Math.round(
+                (pFit * 0.3) + 
+                (pPersuasion * 0.3) + 
+                (pEmotional * 0.2) + 
+                (pAction * 0.2)
+            );
+
+            // DISC percentages (out of 10 questions)
+            const pD = Math.round((discScores.d / 10) * 100);
+            const pI = Math.round((discScores.i / 10) * 100);
+            const pS = Math.round((discScores.s / 10) * 100);
+            const pC = Math.round((discScores.c / 10) * 100);
+
+            return { finalScore, pPersuasion, pEmotional, pAction, pFit, pD, pI, pS, pC };
+        }
+        
+        function showResultsScreen(scores) {
+            resultsScreen.classList.remove('hidden');
+            document.getElementById('res-name').innerText = candidateName.split(' ')[0];
+            
+            // Animate Numbers and Bars
+            animateValue("final-score", 0, scores.finalScore, 1500);
+            
+            setTimeout(() => {
+                document.getElementById('bar-persuasion').style.width = `${scores.pPersuasion}%`;
+                document.getElementById('score-persuasion').innerText = `${scores.pPersuasion}%`;
+
+                document.getElementById('bar-emotional').style.width = `${scores.pEmotional}%`;
+                document.getElementById('score-emotional').innerText = `${scores.pEmotional}%`;
+
+                document.getElementById('bar-action').style.width = `${scores.pAction}%`;
+                document.getElementById('score-action').innerText = `${scores.pAction}%`;
+
+                document.getElementById('bar-fit').style.width = `${scores.pFit}%`;
+                document.getElementById('score-fit').innerText = `${scores.pFit}%`;
+                
+                // DISC bars
+                document.getElementById('bar-d').style.width = `${scores.pD}%`;
+                document.getElementById('score-d').innerText = `${scores.pD}%`;
+                document.getElementById('bar-i').style.width = `${scores.pI}%`;
+                document.getElementById('score-i').innerText = `${scores.pI}%`;
+                document.getElementById('bar-s').style.width = `${scores.pS}%`;
+                document.getElementById('score-s').innerText = `${scores.pS}%`;
+                document.getElementById('bar-c').style.width = `${scores.pC}%`;
+                document.getElementById('score-c').innerText = `${scores.pC}%`;
+
+                // Color the main circle based on score
+                const circle = document.querySelector('.score-circle');
+                if(scores.finalScore >= 80) { circle.style.borderColor = '#10B981'; circle.style.boxShadow = '0 0 30px rgba(16, 185, 129, 0.3)'; }
+                else if(scores.finalScore >= 60) { circle.style.borderColor = '#F59E0B'; circle.style.boxShadow = '0 0 30px rgba(245, 158, 11, 0.3)'; }
+                else { circle.style.borderColor = '#EF4444'; circle.style.boxShadow = '0 0 30px rgba(239, 68, 68, 0.3)'; }
+
+            }, 500);
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+</html>

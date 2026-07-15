@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zapizi | CS Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #215FEA;
+            --primary-hover: #1946B0;
+            --bg-dark: #0F172A;
+            --bg-card: #1E293B;
+            --text-light: #F8FAFC;
+            --text-muted: #94A3B8;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at top right, rgba(33, 95, 234, 0.15), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.05), transparent 40%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logo-circle {
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+            font-family: 'Sora', sans-serif;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            background-color: rgba(33, 95, 234, 0.2);
+            color: #60A5FA;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: rgba(33, 95, 234, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(33, 95, 234, 0.15);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        .radio-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--text-muted);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .option.selected .radio-btn {
+            border-color: var(--primary);
+        }
+
+        .option.selected .radio-btn::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-light);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-muted);
+        }
+
+        /* Results Screen */
+        .results-container {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem auto;
+            box-shadow: 0 0 30px rgba(33, 95, 234, 0.3);
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .radar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .metric-bar-bg {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.5);
+            color: white;
+            font-family: 'Sora', sans-serif;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        #loading-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card" id="intro-screen">
+            <div class="logo">
+                <img src="logo.svg" alt="Zapizi Logo" style="height: 48px;">
+            </div>
+            <h1>Avaliação de Perfil Suporte</h1>
+            <p class="subtitle">Descubra sua aderência à cultura e aos desafios de Suporte Técnico na Zapizi.</p>
+            
+            <div class="form-group">
+                <label for="candidate-name">Nome Completo</label>
+                <input type="text" id="candidate-name" placeholder="Digite seu nome completo">
+            </div>
+            <div class="form-group">
+                <label for="candidate-email">E-mail</label>
+                <input type="email" id="candidate-email" placeholder="Digite seu e-mail">
+            </div>
+            <div class="form-group">
+                <label for="candidate-phone">Telefone (WhatsApp)</label>
+                <input type="tel" id="candidate-phone" placeholder="(11) 99999-9999" maxlength="15">
+            </div>
+            <div class="form-group">
+                <label for="candidate-linkedin">Perfil do LinkedIn (URL)</label>
+                <input type="url" id="candidate-linkedin" placeholder="https://linkedin.com/in/seu-perfil">
+            </div>
+            <div class="form-group">
+                <label for="candidate-salary">Pretensão Salarial</label>
+                <input type="text" id="candidate-salary" placeholder="Ex: R$ 3.500,00">
+            </div>
+
+            <button class="btn" id="start-btn">Iniciar Avaliação (30 perguntas)</button>
+        </div>
+
+        <div class="card hidden" id="quiz-screen">
+            <div class="logo" style="margin-bottom: 1rem;">
+                <img src="logo.svg" alt="Zapizi Logo" style="height: 32px;">
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            
+            <div class="question-header">
+                <span class="badge hidden" id="question-category" style="display: none;">Comportamental</span>
+                <span style="color: var(--text-muted); font-size: 0.9rem; margin-left: auto;" id="question-counter">1/20</span>
+            </div>
+
+            <h2 class="question-text" id="question-text">Question goes here...</h2>
+
+            <div class="options" id="options-container">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-outline" id="prev-btn" style="display: none;">Voltar</button>
+                <button class="btn" id="next-btn" disabled>Próxima</button>
+            </div>
+        </div>
+
+        <div class="card hidden" id="results-screen">
+            <div class="logo">
+                <img src="logo.svg" alt="Zapizi Logo" style="height: 48px;">
+            </div>
+            <div class="results-container">
+                <h1>Avaliação Concluída!</h1>
+                <p class="subtitle">Obrigado, <span id="res-name">Candidato</span>. Seus resultados foram registrados com sucesso.</p>
+
+                <div class="score-circle">
+                    <div class="score-number" id="final-score">0</div>
+                    <div class="score-label">Fit Score</div>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">
+                    Nosso time de People já recebeu os dados abaixo e entrará em contato.
+                </p>
+
+                <div class="radar-chart">
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🧠 Rigor Analítico & Lógica</span>
+                            <span id="score-analytical">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-analytical" style="background-color: #3B82F6;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>🤝 Inteligência Emocional & Empatia</span>
+                            <span id="score-emotional">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-emotional" style="background-color: #10B981;"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>⚡ Pró-atividade & Resolução</span>
+                            <span id="score-action">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-action" style="background-color: #F59E0B;"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-header">
+                            <span>💙 Fit Cultural (Zapizi Way)</span>
+                            <span id="score-fit">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-fill" id="bar-fit" style="background-color: #8B5CF6;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="loading-overlay" class="hidden">
+            <div class="spinner"></div>
+            <p>Salvando seus resultados...</p>
+        </div>
+    </div>
+
+    <script>
+        // Phone mask
+        document.getElementById('candidate-phone').addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+
+        const questions = [
+    // --- PARTE 1: AVALIAÇÃO TÉCNICA E LÓGICA ---
+    { text: "Raciocínio Lógico Básico: Um cliente relata que 'a máquina de bichinhos de pelúcia não está ligando'. Qual é a sua primeira pergunta para investigar a raiz do problema de forma lógica?", options: [
+        { text: "Você já tentou atualizar o software da máquina pelo portal?", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "A máquina está conectada corretamente na tomada e a tomada tem energia?", scores: { analytical: 10, emotional: 5, action: 10, fit: 10 } },
+        { text: "Há quanto tempo o equipamento parou de funcionar?", scores: { analytical: 5, emotional: 5, action: 5, fit: 5 } },
+        { text: "Você poderia me mandar a nota fiscal de compra do equipamento?", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Gestão de Crise e SLA: São 18h de uma sexta-feira. Você tem 3 chamados novos na sua tela:\nA) Dúvida sobre troca de senha.\nB) Cliente 'Diamante' com 50 máquinas fora do ar.\nC) Pedido de segunda via de boleto.\nQual é a ordem correta de atendimento?", options: [
+        { text: "A, depois B, depois C (ordem de facilidade).", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "B primeiro (crítico e afeta faturamento de VIP). Depois C e A.", scores: { analytical: 10, emotional: 8, action: 10, fit: 10 } },
+        { text: "C primeiro, depois A, deixando B por último pois vai demorar.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Mando mensagem automática para os três aguardarem até segunda-feira.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Didática Técnica: Você detectou que o problema do cliente é uma 'Falha de DNS na rede Wi-Fi local dele'. Como você explica isso para o cliente leigo?", options: [
+        { text: "Senhor, o seu roteador não está resolvendo os endereços IP. Altere o DNS primário para 8.8.8.8.", scores: { analytical: 8, emotional: 2, action: 5, fit: 3 } },
+        { text: "O problema é na sua internet. Não podemos ajudar.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "O nosso equipamento perdeu a comunicação com a internet. Por favor, reinicie o seu roteador. Se não voltar, precisaremos falar com o seu provedor.", scores: { analytical: 10, emotional: 10, action: 10, fit: 10 } },
+        { text: "Houve uma perda de pacotes na camada 3 do modelo OSI. Favor dar um ping no roteador.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "O Cliente Ansioso: Um chamado complexo (SLA 48h) está com a Engenharia. O cliente está na linha exigindo solução imediata. Qual a melhor abordagem?", options: [
+        { text: "Informo que a Engenharia já está cuidando e desligo, pois meu trabalho acabou.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Prometo que em 1 hora estará resolvido para acalmá-lo.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Explico a gravidade com empatia, reitero o prazo de 48h, mas prometo dar um status update em 4 horas, independentemente de estar pronto.", scores: { analytical: 9, emotional: 10, action: 10, fit: 10 } },
+        { text: "Sugiro que ele reclame na Ouvidoria para 'apressar' a Engenharia.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Multitarefas Sob Pressão: O sistema inteiro cai. Em cinco minutos, você recebe 15 mensagens simultâneas. Como você reage?", options: [
+        { text: "Entro em desespero e pauso os atendimentos até voltar.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Respondo um por um demoradamente, investigando individualmente.", scores: { analytical: 2, emotional: 5, action: 2, fit: 2 } },
+        { text: "Faço um envio em massa (Broadcast): 'Identificamos uma instabilidade geral e a equipe já está atuando. Retorno em 15 minutos.'", scores: { analytical: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "Ignoro as mensagens, pois ele perceberá quando voltar.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Isolamento de Falhas: O cliente diz: 'A máquina aceita Cartão, mas quando tenta pagar no PIX, o QR Code não aparece'. Qual é a dedução mais provável?", options: [
+        { text: "A máquina está sem internet (falha geral).", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "A máquina está quebrada fisicamente.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "A internet funciona, mas há uma falha de comunicação específica com a API do PIX.", scores: { analytical: 10, emotional: 8, action: 9, fit: 10 } },
+        { text: "O cliente final está sem limite no cartão.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Investigação Reversa: Um cliente manda apenas: 'O sistema de vocês é muito lento!'. Como você conduz a triagem?", options: [
+        { text: "Respondo: 'Nosso sistema está normal. O problema deve ser o seu celular.'", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Respondo: 'Lamento ouvir isso! Poderia me dar um exemplo? É na hora de abrir o app, passar o cartão ou gerar relatório?'", scores: { analytical: 10, emotional: 10, action: 10, fit: 10 } },
+        { text: "Abro chamado para a Engenharia analisar a lentidão.", scores: { analytical: 2, emotional: 2, action: 5, fit: 2 } },
+        { text: "Sugiro que ele limpe o cache do navegador e fecho o chamado.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Autonomia Técnica: Você se depara com um erro 'Erro 994' na maquininha que não existe nos manuais da empresa. Qual é a sua ação?", options: [
+        { text: "Digo ao cliente que a máquina quebrou e mando outra.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Ignoro e peço para ele tentar de novo até dar certo.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Pesquiso o erro no Google (fabricante), documento os sintomas e aciono o N2 com as evidências mastigadas.", scores: { analytical: 10, emotional: 8, action: 10, fit: 10 } },
+        { text: "Mando o cliente ligar para a fabricante da máquina para descobrir o que é.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+
+    // --- PARTE 2: SIMULAÇÕES PRÁTICAS E INTELIGÊNCIA EMOCIONAL ---
+    { text: "A Ativação Tensa: O cliente tentou instalar sozinho, conectou fios errados e agora a máquina não liga. Ele exige o dinheiro de volta irritado. Como responder com QE?", options: [
+        { text: "'Você fez a ligação errada. Não devolvemos o dinheiro por imperícia.'", scores: { analytical: 2, emotional: 0, action: 2, fit: 0 } },
+        { text: "'Acalme-se. Envie o equipamento de volta que nosso laboratório instala.'", scores: { analytical: 5, emotional: 5, action: 5, fit: 5 } },
+        { text: "'Fique tranquilo, João. Essas ligações confundem no começo! Pode mandar uma foto da fiação? Eu te guio fio a fio agora.'", scores: { analytical: 10, emotional: 10, action: 10, fit: 10 } },
+        { text: "'Não assumimos responsabilidade por imperícia. Chame um eletricista.'", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "A Falsa Cobrança: Cliente acusa: 'A máquina cobrou e não liberou a pelúcia. Seu sistema rouba dinheiro!'. Você vê que foi negado por Saldo Insuficiente no banco. Como responder?", options: [
+        { text: "'Você está equivocado. Nosso sistema não rouba. Foi negada.'", scores: { analytical: 5, emotional: 2, action: 5, fit: 2 } },
+        { text: "'Isso é impossível. Peça o extrato carimbado pelo gerente.'", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "'João, fique em paz! A máquina não liberou porque o banco recusou por Saldo Insuficiente. O dinheiro foi barrado no banco, não saiu da conta.'", scores: { analytical: 10, emotional: 10, action: 10, fit: 10 } },
+        { text: "'Foi um atraso de rede. Pede para tentar de novo.'", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "O Problema de Terceiros: A máquina parou pois o sinal da operadora Claro caiu na região. Como comunicar sem parecer que está 'tirando o corpo fora'?", options: [
+        { text: "'O problema é da Claro. Teremos que aguardar.'", scores: { analytical: 2, emotional: 2, action: 2, fit: 2 } },
+        { text: "'Senhor, o sistema está 100%. O sinal da Claro caiu na sua rua. Para não perder vendas, pode conectar no Wi-Fi temporariamente?'", scores: { analytical: 10, emotional: 10, action: 10, fit: 10 } },
+        { text: "'Falha de LTE na ERB da operadora celular. Reinicie a cada 5 mins.'", scores: { analytical: 8, emotional: 2, action: 5, fit: 4 } },
+        { text: "'As operadoras no Brasil são ruins. Quer que eu mande outro chip?'", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Gestão de Erros: Você comete um grande erro (ex: cancela um plano sem querer). Ao descobrir, qual sua atitude?", options: [
+        { text: "Tento desfazer silenciosamente antes que descubram.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Aviso supervisor, reverto e atualizo o manual para garantir que não aconteça de novo.", scores: { analytical: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "Peço desculpas chorando e fico com medo de atender chamados.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Digo ao cliente que 'o sistema falhou'.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "O Cliente 'VIP' Agressivo: Um cliente VIP te xinga no chat dizendo que a equipe é inútil. Como você lida?", options: [
+        { text: "Desligo o chat ou bloqueio na hora.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Continuo o atendimento tremendo de nervoso.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Entendo que ele está estressado com perdas. Digo: 'Entendo sua urgência, estou aqui para resolver. Peço apenas respeito. O que parou de funcionar?'", scores: { analytical: 9, emotional: 10, action: 10, fit: 10 } },
+        { text: "Xingo de volta para 'impor respeito'.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Falha de Comunicação: A Engenharia resolveu um bug e subiu a atualização sem te avisar. O cliente agradece que 'voltou'. Como você age?", options: [
+        { text: "Finjo que fui eu quem resolveu.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "Digo 'Que bom! Nem me avisaram que tinham arrumado...'", scores: { analytical: 2, emotional: 2, action: 2, fit: 2 } },
+        { text: "Fico feliz, mas internamente cobro o N3 para melhorar a comunicação de atualizações.", scores: { analytical: 10, emotional: 9, action: 10, fit: 10 } },
+        { text: "Peço para testar 5 vezes porque não confio na TI.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Solicitação Financeira: A máquina ficou offline 1 hora e o cliente pede desconto de R$50. Você não tem alçada para isso. O que diz?", options: [
+        { text: "'Claro, já te dei o desconto!' (mesmo sem poder).", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "'Não damos desconto por 1 horinha.'", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "'Entendo. Minha permissão não deixa aplicar descontos, mas vou escalar ao Financeiro e te retorno até amanhã.'", scores: { analytical: 9, emotional: 10, action: 10, fit: 10 } },
+        { text: "'Reclamações só no e-mail financeiro@...'", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "Empatia com o Concorrente: O cliente diz que vai cancelar e voltar para a Cielo se der problema de novo. O que você responde?", options: [
+        { text: "'Pode voltar, o sistema deles trava muito mais.'", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "'Senhor, trabalhamos duro para evitar falhas, e nosso diferencial é o suporte humanizado. Vamos resolver isso juntos.'", scores: { analytical: 10, emotional: 10, action: 10, fit: 10 } },
+        { text: "'Faça como achar melhor.'", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } },
+        { text: "'A Cielo não aceita vending machines, não tem pra onde fugir.'", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+
+    // --- PARTE 3: PERFIL, MOTIVAÇÃO E CARREIRA ---
+    { text: "Autoanálise MBTI: Diante de um problema técnico totalmente novo, como sua mente trabalha?", options: [
+        { text: "Busco padrões em problemas do passado e aplico soluções testadas e seguras (Sensorial).", scores: { analytical: 10, emotional: 8, action: 8, fit: 10 } },
+        { text: "Adoro criar teorias, testar hipóteses novas e descobrir soluções 'fora da caixa' (Intuição).", scores: { analytical: 8, emotional: 8, action: 10, fit: 10 } },
+        { text: "Espero alguém mais experiente me dizer o que fazer.", scores: { analytical: 2, emotional: 5, action: 2, fit: 2 } },
+        { text: "Abro um chamado direto para a fabricante resolver.", scores: { analytical: 2, emotional: 2, action: 2, fit: 2 } }
+    ]},
+    { text: "Autoanálise Comunicação: Ao entrar na empresa, como prefere ser treinado no sistema?", options: [
+        { text: "Lendo todos os POPs e fluxogramas antes de tocar em qualquer coisa.", scores: { analytical: 10, emotional: 5, action: 8, fit: 10 } },
+        { text: "Sentando ao lado de alguém, vendo atender e aprendendo na conversa.", scores: { analytical: 5, emotional: 10, action: 8, fit: 10 } },
+        { text: "Tentando usar o sistema sozinho até descobrir como funciona na marra.", scores: { analytical: 5, emotional: 5, action: 10, fit: 8 } },
+        { text: "Não gosto de treinar, prefiro improvisar na hora do chamado.", scores: { analytical: 0, emotional: 0, action: 0, fit: 0 } }
+    ]},
+    { text: "O Perfil N1 vs N3: No suporte agitado, qual rotina te faz mais feliz?", options: [
+        { text: "Investigar sozinho, cavar dados e achar a causa raiz de falhas complexas em silêncio.", scores: { analytical: 10, emotional: 5, action: 8, fit: 10 } },
+        { text: "Conversar, acalmar cliente frustrado e virar o jogo no relacionamento.", scores: { analytical: 5, emotional: 10, action: 8, fit: 10 } },
+        { text: "Ficar apenas respondendo e-mails padronizados sem falar com ninguém.", scores: { analytical: 2, emotional: 2, action: 2, fit: 2 } },
+        { text: "Criar planilhas de controle de estoque de equipamentos.", scores: { analytical: 5, emotional: 5, action: 5, fit: 5 } }
+    ]},
+    { text: "Âncora de Carreira: O que mais te motiva profissionalmente pros próximos anos?", options: [
+        { text: "Gerência/Liderança: Liderar pessoas e processos.", scores: { analytical: 8, emotional: 8, action: 10, fit: 10 } },
+        { text: "Especialização Técnica: Ser o 'Mago da Infra' que resolve os piores bugs.", scores: { analytical: 10, emotional: 5, action: 8, fit: 10 } },
+        { text: "Autonomia Total: Sem chefes monitorando.", scores: { analytical: 5, emotional: 5, action: 5, fit: 5 } },
+        { text: "Segurança e Estabilidade: Emprego garantido e previsível.", scores: { analytical: 5, emotional: 5, action: 5, fit: 5 } }
+    ]},
+
+    // --- DISC PROFILE (10 questions) ---
+    { text: "Em um ambiente de trabalho novo, como você se comporta?", options: [
+        { text: "Assumo a liderança e começo a delegar tarefas rapidamente.", discScore: 'D', isDisc: true },
+        { text: "Procuro conversar, me entrosar e conhecer todo mundo.", discScore: 'I', isDisc: true },
+        { text: "Observo a dinâmica, ajudo os outros e me adapto à rotina.", discScore: 'S', isDisc: true },
+        { text: "Foco em entender as regras, processos e fazer o trabalho com precisão.", discScore: 'C', isDisc: true }
+    ], isDisc: true },
+    { text: "Quando enfrenta um problema complexo, você prefere:", options: [
+        { text: "Tomar uma decisão rápida e corrigir no caminho se der errado.", discScore: 'D', isDisc: true },
+        { text: "Reunir o time para debater ideias e encontrar algo criativo juntos.", discScore: 'I', isDisc: true },
+        { text: "Buscar uma solução estável e testada, sem grandes sobressaltos.", discScore: 'S', isDisc: true },
+        { text: "Analisar profundamente todos os dados e detalhes antes de agir.", discScore: 'C', isDisc: true }
+    ], isDisc: true },
+    { text: "Qual palavra melhor descreve seu foco principal?", options: [
+        { text: "Resultados.", discScore: 'D', isDisc: true },
+        { text: "Pessoas.", discScore: 'I', isDisc: true },
+        { text: "Estabilidade.", discScore: 'S', isDisc: true },
+        { text: "Qualidade.", discScore: 'C', isDisc: true }
+    ], isDisc: true },
+    { text: "Durante uma discussão acalorada, você geralmente:", options: [
+        { text: "Defende seu ponto com firmeza e vai direto ao ponto.", discScore: 'D', isDisc: true },
+        { text: "Usa o humor ou carisma para apaziguar e convencer.", discScore: 'I', isDisc: true },
+        { text: "Ouve atentamente e tenta encontrar um consenso amigável.", discScore: 'S', isDisc: true },
+        { text: "Apresenta fatos lógicos e concretos, evitando emoções.", discScore: 'C', isDisc: true }
+    ], isDisc: true },
+    { text: "Como você prefere que seus objetivos sejam definidos?", options: [
+        { text: "Metas agressivas e desafiadoras.", discScore: 'D', isDisc: true },
+        { text: "Metas inspiradoras e com reconhecimento público.", discScore: 'I', isDisc: true },
+        { text: "Metas claras, passo a passo e sem pressão súbita.", discScore: 'S', isDisc: true },
+        { text: "Metas precisas, lógicas e baseadas em dados concretos.", discScore: 'C', isDisc: true }
+    ], isDisc: true },
+    { text: "O que mais te desmotiva no trabalho?", options: [
+        { text: "Perder autonomia ou o controle das decisões.", discScore: 'D', isDisc: true },
+        { text: "Falta de interação social ou reconhecimento.", discScore: 'I', isDisc: true },
+        { text: "Mudanças constantes e imprevisíveis na rotina.", discScore: 'S', isDisc: true },
+        { text: "Desorganização, falta de regras ou trabalho mal feito.", discScore: 'C', isDisc: true }
+    ], isDisc: true },
+    { text: "Como você age sob extrema pressão?", options: [
+        { text: "Fico autoritário e exijo ação imediata.", discScore: 'D', isDisc: true },
+        { text: "Tento manter a energia alta e converso bastante.", discScore: 'I', isDisc: true },
+        { text: "Me retraio e busco manter a harmonia a todo custo.", discScore: 'S', isDisc: true },
+        { text: "Fico muito crítico e exijo perfeição nos detalhes.", discScore: 'C', isDisc: true }
+    ], isDisc: true },
+    { text: "Ao comunicar uma ideia, você costuma:", options: [
+        { text: "Ir direto ao ponto, resumindo o impacto no resultado final.", discScore: 'D', isDisc: true },
+        { text: "Falar com entusiasmo e contar histórias.", discScore: 'I', isDisc: true },
+        { text: "Explicar calmamente como isso vai ajudar todos na equipe.", discScore: 'S', isDisc: true },
+        { text: "Apresentar planilhas, gráficos e provas detalhadas.", discScore: 'C', isDisc: true }
+    ], isDisc: true },
+    { text: "No seu grupo de amigos, você é aquele que:", options: [
+        { text: "Decide onde ir e o que fazer.", discScore: 'D', isDisc: true },
+        { text: "Anima a festa e junta as pessoas.", discScore: 'I', isDisc: true },
+        { text: "Apoia as decisões e cuida para que todos estejam bem.", discScore: 'S', isDisc: true },
+        { text: "Organiza o dinheiro, o mapa e o roteiro.", discScore: 'C', isDisc: true }
+    ], isDisc: true },
+    { text: "A melhor maneira de reconhecer o seu bom trabalho é:", options: [
+        { text: "Dando-me mais poder e responsabilidade.", discScore: 'D', isDisc: true },
+        { text: "Com um prêmio ou elogio em frente à equipe.", discScore: 'I', isDisc: true },
+        { text: "Com um feedback sincero e privado valorizando minha lealdade.", discScore: 'S', isDisc: true },
+        { text: "Reconhecendo a precisão e excelência técnica do meu projeto.", discScore: 'C', isDisc: true }
+    ], isDisc: true }
+];
+
+        let currentQuestion = 0;
+        let candidateName = '';
+        let candidateEmail = '';
+        let candidatePhone = '';
+        let candidateLinkedin = '';
+        let candidateSalary = '';
+        let answers = [];
+
+        // Elements
+        const introScreen = document.getElementById('intro-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        
+        const startBtn = document.getElementById('start-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        
+        const questionText = document.getElementById('question-text');
+        const questionCategory = document.getElementById('question-category');
+        const questionCounter = document.getElementById('question-counter');
+        const optionsContainer = document.getElementById('options-container');
+        const progressFill = document.getElementById('progress-fill');
+
+        // State initialization
+        startBtn.addEventListener('click', () => {
+            const name = document.getElementById('candidate-name').value.trim();
+            const email = document.getElementById('candidate-email').value.trim();
+            const phone = document.getElementById('candidate-phone').value.trim();
+            const linkedin = document.getElementById('candidate-linkedin').value.trim();
+            const salary = document.getElementById('candidate-salary').value.trim();
+            
+            if(!name || !email || !phone || !linkedin || !salary) {
+                alert("Por favor, preencha todos os campos obrigatórios (incluindo Pretensão Salarial).");
+                return;
+            }
+            
+            if(phone.length < 14) {
+                alert("Por favor, informe um telefone válido com DDD.");
+                return;
+            }
+
+            candidateName = name;
+            candidateEmail = email;
+            candidatePhone = phone;
+            candidateLinkedin = linkedin;
+            candidateSalary = salary;
+            answers = new Array(questions.length).fill(null);
+            
+            introScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            renderQuestion();
+        });
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            questionText.innerText = q.text;
+            questionCategory.innerText = q.category;
+            questionCounter.innerText = `${currentQuestion + 1}/${questions.length}`;
+            
+            const progress = ((currentQuestion) / questions.length) * 100;
+            progressFill.style.width = `${progress}%`;
+
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = 'option';
+                if(answers[currentQuestion] === index) {
+                    optDiv.classList.add('selected');
+                }
+                
+                optDiv.innerHTML = `
+                    <div class="radio-btn"></div>
+                    <div>${opt.text}</div>
+                `;
+                
+                optDiv.addEventListener('click', () => {
+                    document.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
+                    optDiv.classList.add('selected');
+                    answers[currentQuestion] = index;
+                    nextBtn.disabled = false;
+                });
+                
+                optionsContainer.appendChild(optDiv);
+            });
+
+            prevBtn.style.display = currentQuestion > 0 ? 'block' : 'none';
+            nextBtn.innerText = currentQuestion === questions.length - 1 ? 'Finalizar' : 'Próxima';
+            nextBtn.disabled = answers[currentQuestion] === null;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        });
+
+        async function finishQuiz() {
+            quizScreen.classList.add('hidden');
+            
+            const scores = calculateScores();
+            
+            // Show loading
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            
+            try {
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: candidateName,
+                        email: candidateEmail,
+                        phone: candidatePhone,
+                        linkedin: candidateLinkedin,
+                        salary: candidateSalary,
+                        finalScore: scores.finalScore,
+                        analytical: scores.pAnalytical,
+                        emotional: scores.pEmotional,
+                        action: scores.pAction,
+                        fit: scores.pFit,
+                        disc: scores.disc,
+                        predominant: scores.predominantName
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Falha ao salvar');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Os resultados foram calculados, mas houve um erro ao enviar para o servidor. Tire um print da próxima tela.');
+            } finally {
+                document.getElementById('loading-overlay').classList.add('hidden');
+                showResultsScreen(scores);
+            }
+        }
+
+        function calculateScores() {
+            let total = { analytical: 0, emotional: 0, action: 0, fit: 0 };
+            let maxTotal = { analytical: 0, emotional: 0, action: 0, fit: 0 };
+            let discCount = { D: 0, I: 0, S: 0, C: 0 };
+            let totalDisc = 0;
+
+            questions.forEach((q, i) => {
+                const selectedOpt = q.options[answers[i]];
+                
+                if (q.isDisc) {
+                    discCount[selectedOpt.discScore]++;
+                    totalDisc++;
+                } else {
+                    total.analytical += selectedOpt.scores.analytical;
+                    total.emotional += selectedOpt.scores.emotional;
+                    total.action += selectedOpt.scores.action;
+                    total.fit += selectedOpt.scores.fit;
+
+                    let maxA = 0, maxE = 0, maxAc = 0, maxF = 0;
+                    q.options.forEach(opt => {
+                        if(opt.scores.analytical > maxA) maxA = opt.scores.analytical;
+                        if(opt.scores.emotional > maxE) maxE = opt.scores.emotional;
+                        if(opt.scores.action > maxAc) maxAc = opt.scores.action;
+                        if(opt.scores.fit > maxF) maxF = opt.scores.fit;
+                    });
+
+                    maxTotal.analytical += maxA;
+                    maxTotal.emotional += maxE;
+                    maxTotal.action += maxAc;
+                    maxTotal.fit += maxF;
+                }
+            });
+            
+            const disc = {
+                D: Math.round((discCount.D / totalDisc) * 100) || 0,
+                I: Math.round((discCount.I / totalDisc) * 100) || 0,
+                S: Math.round((discCount.S / totalDisc) * 100) || 0,
+                C: Math.round((discCount.C / totalDisc) * 100) || 0
+            };
+            
+            const predominant = Object.keys(disc).reduce((a, b) => disc[a] > disc[b] ? a : b);
+            const discNames = { D: 'Dominante', I: 'Influente', S: 'Estável', C: 'Analítico/Cauteloso' };
+
+            const pAnalytical = Math.round((total.analytical / maxTotal.analytical) * 100);
+            const pEmotional = Math.round((total.emotional / maxTotal.emotional) * 100);
+            const pAction = Math.round((total.action / maxTotal.action) * 100);
+            const pFit = Math.round((total.fit / maxTotal.fit) * 100);
+            const finalScore = Math.round((pAnalytical + pEmotional + pAction + pFit) / 4);
+
+            return { finalScore, pAnalytical, pEmotional, pAction, pFit, disc, predominantName: discNames[predominant] };
+        }
+        
+        function showResultsScreen(scores) {
+            resultsScreen.classList.remove('hidden');
+            document.getElementById('res-name').innerText = candidateName.split(' ')[0];
+            
+            animateValue("final-score", 0, scores.finalScore, 1500);
+            
+            setTimeout(() => {
+                document.getElementById('bar-analytical').style.width = `${scores.pAnalytical}%`;
+                document.getElementById('score-analytical').innerText = `${scores.pAnalytical}%`;
+
+                document.getElementById('bar-emotional').style.width = `${scores.pEmotional}%`;
+                document.getElementById('score-emotional').innerText = `${scores.pEmotional}%`;
+
+                document.getElementById('bar-action').style.width = `${scores.pAction}%`;
+                document.getElementById('score-action').innerText = `${scores.pAction}%`;
+
+                document.getElementById('bar-fit').style.width = `${scores.pFit}%`;
+                document.getElementById('score-fit').innerText = `${scores.pFit}%`;
+                
+                const circle = document.querySelector('.score-circle');
+                if(scores.finalScore >= 80) { circle.style.borderColor = '#10B981'; circle.style.boxShadow = '0 0 30px rgba(16, 185, 129, 0.3)'; }
+                else if(scores.finalScore >= 60) { circle.style.borderColor = '#F59E0B'; circle.style.boxShadow = '0 0 30px rgba(245, 158, 11, 0.3)'; }
+                else { circle.style.borderColor = '#EF4444'; circle.style.boxShadow = '0 0 30px rgba(239, 68, 68, 0.3)'; }
+            }, 500);
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+</html>
